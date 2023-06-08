@@ -1,0 +1,421 @@
+<div [ngSwitch]="mostrarFormulario">
+    <div *ngSwitchCase="'pacientes'">
+        <h2 id="tituloPacientes" class="text-center p-3">Ingreso de Pacientes</h2>
+        <form [formGroup]="formularioRegistroPaciente" (ngSubmit)="registrarPaciente()">
+            <div class="form-row d-flex justify-content-around mb-4">
+                <div class="form-group col-md-5">
+                    <label class="labelPacientes" class="labelPacientes" for="nombrePaciente">Nombre del
+                        paciente</label>
+                    <input type="text" class="form-control" id="nombrePaciente" placeholder="Nombre"
+                        formControlName="nombre">
+                    <div *ngIf="formularioRegistroPaciente.get('nombre')?.invalid && (formularioRegistroPaciente.get('nombre')?.dirty || formularioRegistroPaciente.get('nombre')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroPaciente.get('nombre')?.errors?.['required']">
+                            El campo nombre es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroPaciente.get('nombre')?.errors?.['minlength']">
+                            El campo nombre debe contener al menos 6 digitos.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="labelPacientes" for="apellidoPaciente">Apellido</label>
+                    <input type="text" class="form-control" id="apellidoPaciente" placeholder="Apellido"
+                        formControlName="apellido">
+                    <div *ngIf="formularioRegistroPaciente.get('apellido')?.invalid && (formularioRegistroPaciente.get('apellido')?.dirty || formularioRegistroPaciente.get('apellido')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroPaciente.get('apellido')?.errors?.['required']">
+                            El campo apellido es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroPaciente.get('apellido')?.errors?.['minlength']">
+                            El campo apellido debe contener al menos 6 digitos.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row d-flex justify-content-around mb-4">
+                <div class="form-group col-md-4">
+                    <label class="labelPacientes" for="edadPaciente">Edad</label>
+                    <input type="number" class="form-control" id="edadPaciente" placeholder="Edad"
+                        formControlName="edad">
+                    <div *ngIf="formularioRegistroPaciente.get('edad')?.invalid && (formularioRegistroPaciente.get('edad')?.dirty || formularioRegistroPaciente.get('edad')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroPaciente.get('edad')?.errors?.['required']">
+                            El campo edad es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroPaciente.get('edad')?.errors?.['min']">
+                            El campo edad debe ser al menos 1.
+                        </div>
+                        <div *ngIf="formularioRegistroPaciente.get('edad')?.errors?.['max']">
+                            El campo edad debe ser como maximo 99.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-7">
+                    <label class="labelPacientes" for="documentoPaciente">DNI</label>
+                    <input type="number" class="form-control" id="documentoPaciente" placeholder="N° Documento"
+                        formControlName="documento">
+                    <div *ngIf="formularioRegistroPaciente.get('documento')?.invalid && (formularioRegistroPaciente.get('documento')?.dirty || formularioRegistroPaciente.get('documento')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroPaciente.get('documento')?.errors?.['required']">
+                            El dni es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroPaciente.get('documento')?.errors?.['min']">
+                            El DNI debe ser al menos 4.000.000
+                        </div>
+                        <div *ngIf="formularioRegistroPaciente.get('documento')?.errors?.['max']">
+                            El DNI debe tener como maximo 8 digitos
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row d-flex justify-content-around mb-4">
+                <div class="form-group col-md-4">
+                    <label class="labelPacientes" for="obraSocial">Obra social</label>
+                    <input type="text" class="form-control" id="obraSocial" placeholder="Obra social"
+                        formControlName="obraSocial">
+                    <div *ngIf="formularioRegistroPaciente.get('obraSocial')?.invalid && (formularioRegistroPaciente.get('obraSocial')?.dirty || formularioRegistroPaciente.get('obraSocial')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroPaciente.get('obraSocial')?.errors?.['required']">
+                            El campo Obra social es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroPaciente.get('obraSocial')?.errors?.['minlength']">
+                            El campo Obra social debe tener almenos 3 digitos.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-7">
+                    <label class="labelPacientes" for="nroAfiliadoPaciente">Numero de afiliado</label>
+                    <input type="number" class="form-control" id="nroAfiliadoPaciente" formControlName="nroAfiliado"
+                        placeholder="N° Afiliado Obra social">
+                </div>
+            </div>
+
+            <div class="form-row d-flex justify-content-around mb-4 px-2">
+                <div class="form-group col-md-12">
+                    <label class="labelPacientes" for="emailPaciente">Correo electronico</label>
+                    <input type="email" class="form-control" id="emailPaciente" placeholder="Correo electronico"
+                        formControlName="email">
+                    <div *ngIf="formularioRegistroPaciente.get('email')?.invalid && (formularioRegistroPaciente.get('email')?.dirty || formularioRegistroPaciente.get('email')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroPaciente.get('email')?.errors?.['required']">
+                            El correo electronico es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroPaciente.get('email')?.errors?.['email']">
+                            El correo electronico debe ser valido.
+                        </div>
+                        <div *ngIf="formularioRegistroPaciente.get('email')?.errors?.['invalid']">
+                            El correo electronico ya se encuentra registrado.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row d-flex justify-content-around mb-4 px-2">
+                <div class="form-group col-md-6 pe-2">
+                    <label class="labelPacientes" for="passwordPaciente">Contraseña</label>
+                    <input type="password" class="form-control" id="passwordPaciente" placeholder="Contraseña"
+                        formControlName="contraseña">
+                    <div *ngIf="formularioRegistroPaciente.get('contraseña')?.invalid && (formularioRegistroPaciente.get('contraseña')?.dirty || formularioRegistroPaciente.get('contraseña')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroPaciente.get('contraseña')?.errors?.['required']">
+                            El campo contraseña es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroPaciente.get('contraseña')?.errors?.['minlength']">
+                            El campo contraseña debe tener al menos 6 digitos.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 ps-2">
+                    <label class="labelPacientes" for="repetirPasswordPaciente">Repetir contraseña</label>
+                    <input type="password" class="form-control" id="repetirPasswordPaciente"
+                        formControlName="repetirContraseña" placeholder="Repetir Contraseña">
+                    <div *ngIf="formularioRegistroPaciente.get('repetirContraseña')?.invalid && (formularioRegistroPaciente.get('repetirContraseña')?.dirty || formularioRegistroPaciente.get('repetirContraseña')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroPaciente.get('repetirContraseña')?.errors?.['required']">
+                            El campo repetir contraseña es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroPaciente.get('repetirContraseña')?.errors?.['minlength']">
+                            El campo repetir contraseña debe tener al menos 6 digitos.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex col-md-12 justify-content-around">
+                <input type="submit" value="Crear paciente" class="btn btn-success">
+                <input type="submit" value="Reiniciar Formulario" class="btn btn-secondary" (click)="limpiarFormulario()">
+            </div>
+        </form>
+    </div>
+    <div *ngSwitchCase="'especialistas'">
+        <h2 id="tituloEspecialista" class="text-center p-3">Ingreso de Especialistas</h2>
+        <form [formGroup]="formularioRegistroEspecialista" (ngSubmit)="registrarEspecialista()">
+            <div class="form-row d-flex justify-content-around mb-4">
+                <div class="form-group col-md-5">
+                    <label class="labelEspecialista" for="nombreEspecialista">Nombre del
+                        especialista</label>
+                    <input type="text" class="form-control" id="nombreEspecialista" placeholder="Nombre"
+                        formControlName="nombre">
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="labelEspecialista" for="apellidoEspecialista">Apellido</label>
+                    <input type="text" class="form-control" id="apellidoEspecialista" placeholder="Apellido"
+                        formControlName="apellido">
+                </div>
+            </div>
+
+            <div class="form-row d-flex justify-content-around mb-4">
+                <div class="form-group col-md-4">
+                    <label class="labelEspecialista" for="edadPaciente">Edad</label>
+                    <input type="number" class="form-control" id="edadPaciente" placeholder="Edad"
+                        formControlName="edad">
+                    <div *ngIf="formularioRegistroEspecialista.get('edad')?.invalid && (formularioRegistroEspecialista.get('edad')?.dirty || formularioRegistroEspecialista.get('edad')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroEspecialista.get('edad')?.errors?.['required']">
+                            El campo edad es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroEspecialista.get('edad')?.errors?.['min']">
+                            El campo edad debe ser al menos 1.
+                        </div>
+                        <div *ngIf="formularioRegistroEspecialista.get('edad')?.errors?.['max']">
+                            El campo edad debe ser como maximo 99.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-7">
+                    <label class="labelEspecialista" for="documentoEspecialista">DNI</label>
+                    <input type="number" class="form-control" id="documentoEspecialista" placeholder="N° Documento"
+                        formControlName="documento">
+                    <div *ngIf="formularioRegistroEspecialista.get('documento')?.invalid && (formularioRegistroEspecialista.get('documento')?.dirty || formularioRegistroEspecialista.get('documento')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroEspecialista.get('documento')?.errors?.['required']">
+                            El dni es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroEspecialista.get('documento')?.errors?.['min']">
+                            El DNI debe ser al menos 4.000.000
+                        </div>
+                        <div *ngIf="formularioRegistroEspecialista.get('documento')?.errors?.['max']">
+                            El DNI debe tener como maximo 8 digitos
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row d-flex justify-content-around mb-4 px-2">
+                <div class="form-group col-md-6 pe-2">
+                    <label class="labelEspecialista" for="especialidadEspecialista">Especialidad</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1" (click)="mostrarNuevaEsp = !mostrarNuevaEsp">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-bookmark-plus" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zm6.5-11a.5.5 0 0 0-1 0V6H6a.5.5 0 0 0 0 1h1.5v1.5a.5.5 0 0 0 1 0V7H10a.5.5 0 0 0 0-1H8.5V4.5z">
+                                </path>
+                            </svg>
+                        </span>
+                        <ng-container *ngIf="!mostrarNuevaEsp; else nuevaEspecialidad">
+                            <select class="form-select" id="especialidadEspecialista" aria-describedby="basic-addon1"
+                                placeholder="Especialidad">
+                                <option>ssd</option>
+                                <option>ssd</option>
+                            </select>
+                        </ng-container>
+                        <ng-template #nuevaEspecialidad>
+                            <input type="text" class="form-control" id="especialidadEspecialista"
+                                aria-describedby="basic-addon1" placeholder="Nueva especialidad">
+                        </ng-template>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 ps-3">
+                    <label class="labelEspecialista" for="nroMatriculaEspecialista">Numero de Matricula</label>
+                    <input type="number" class="form-control" id="nroMatriculaEspecialista"
+                        formControlName="nroMatricula" placeholder="N° Matricula profesional">
+                </div>
+            </div>
+
+            <div class="form-row d-flex justify-content-around mb-4 px-2">
+                <div class="form-group col-md-12">
+                    <label class="labelEspecialista" for="emailEspecialista">Correo electronico</label>
+                    <input type="email" class="form-control" id="emailEspecialista" placeholder="Correo electronico"
+                        formControlName="email">
+                </div>
+                <div *ngIf="formularioRegistroEspecialista.get('email')?.invalid && (formularioRegistroEspecialista.get('email')?.dirty || formularioRegistroEspecialista.get('email')?.touched)"
+                    class="alert alert-danger py-1 mt-1">
+                    <div *ngIf="formularioRegistroEspecialista.get('email')?.errors?.['required']">
+                        El correo electronico es requerido.
+                    </div>
+                    <div *ngIf="formularioRegistroEspecialista.get('email')?.errors?.['email']">
+                        El correo electronico debe ser valido.
+                    </div>
+                    <div *ngIf="formularioRegistroEspecialista.get('email')?.errors?.['invalid']">
+                        El correo electronico ya se encuentra registrado.
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row d-flex justify-content-around mb-4 px-2">
+                <div class="form-group col-md-6 pe-2">
+                    <label class="labelEspecialista" for="passwordEspecialista">Contraseña</label>
+                    <input type="password" class="form-control" id="passwordEspecialista" placeholder="Contraseña"
+                        formControlName="contraseña">
+                    <div *ngIf="formularioRegistroEspecialista.get('contraseña')?.invalid && (formularioRegistroEspecialista.get('contraseña')?.dirty || formularioRegistroEspecialista.get('contraseña')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroEspecialista.get('contraseña')?.errors?.['required']">
+                            El campo contraseña es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroEspecialista.get('contraseña')?.errors?.['minlength']">
+                            El campo contraseña debe tener al menos 6 digitos.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 ps-2">
+                    <label class="labelEspecialista" for="repetirPasswordEspecialista">Repetir contraseña</label>
+                    <input type="password" class="form-control" id="repetirPasswordEspecialista"
+                        formControlName="repetirContraseña" placeholder="Repetir Contraseña">
+                    <div *ngIf="formularioRegistroEspecialista.get('repetirContraseña')?.invalid && (formularioRegistroEspecialista.get('repetirContraseña')?.dirty || formularioRegistroEspecialista.get('repetirContraseña')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroEspecialista.get('repetirContraseña')?.errors?.['required']">
+                            El campo repetir contraseña es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroEspecialista.get('repetirContraseña')?.errors?.['minlength']">
+                            El campo repetir contraseña debe tener al menos 6 digitos.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row d-flex justify-content-around mb-4 px-2">
+                <div class="form-group col-md-12 pe-2">
+                    <label class="labelEspecialista" for="imagenPerfilEsp">Imagen de Perfil</label>
+                    <input type="file" class="form-control" id="imagenPerfilEsp">
+                </div>
+            </div>
+
+            <div class="d-flex col-md-12 justify-content-around">
+                <input type="submit" value="Crear especialista" class="btn btn-success">
+                <input type="button" value="Reiniciar Formulario" class="btn btn-secondary" (click)="limpiarFormulario()">
+            </div>
+        </form>
+    </div>
+    <div *ngSwitchCase="'administradores'">
+        <h2 id="tituloAdministrador" class="text-center p-3">Ingreso de Administradores</h2>
+        <form [formGroup]="formularioRegistroAdministrador" (ngSubmit)="registrarAdministrador()">
+            <div class="form-row d-flex justify-content-around mb-4">
+                <div class="form-group col-md-5">
+                    <label class="labelAdministrador" for="nombreAdministrador">Nombre del
+                        administrador</label>
+                    <input type="text" class="form-control" id="nombreAdministrador" placeholder="Nombre"
+                        formControlName="nombre">
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="labelAdministrador" for="apellidoAdministrador">Apellido</label>
+                    <input type="text" class="form-control" id="apellidoAdministrador" placeholder="Apellido"
+                        formControlName="apellido">
+                </div>
+            </div>
+
+            <div class="form-row d-flex justify-content-around mb-4">
+                <div class="form-group col-md-4">
+                    <label class="labelAdministrador" for="edadPaciente">Edad</label>
+                    <input type="number" class="form-control" id="edadPaciente" placeholder="Edad"
+                        formControlName="edad">
+                    <div *ngIf="formularioRegistroAdministrador.get('edad')?.invalid && (formularioRegistroAdministrador.get('edad')?.dirty || formularioRegistroAdministrador.get('edad')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroAdministrador.get('edad')?.errors?.['required']">
+                            El campo edad es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroAdministrador.get('edad')?.errors?.['min']">
+                            El campo edad debe ser al menos 1.
+                        </div>
+                        <div *ngIf="formularioRegistroAdministrador.get('edad')?.errors?.['max']">
+                            El campo edad debe ser como maximo 99.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-7">
+                    <label class="labelAdministrador" for="documentoAdministrador">DNI</label>
+                    <input type="number" class="form-control" id="documentoAdministrador" placeholder="N° Documento"
+                        formControlName="documento">
+                    <div *ngIf="formularioRegistroAdministrador.get('documento')?.invalid && (formularioRegistroAdministrador.get('documento')?.dirty || formularioRegistroAdministrador.get('documento')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroAdministrador.get('documento')?.errors?.['required']">
+                            El DNI es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroAdministrador.get('documento')?.errors?.['min']">
+                            El DNI debe ser al menos 4.000.000
+                        </div>
+                        <div *ngIf="formularioRegistroAdministrador.get('documento')?.errors?.['max']">
+                            El DNI debe tener como maximo 8 digitos
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row d-flex justify-content-around mb-4 px-2">
+                <div class="form-group col-md-12">
+                    <label class="labelAdministrador" for="emailAdministrador">Correo electronico</label>
+                    <input type="email" class="form-control" id="emailAdministrador" placeholder="Correo electronico"
+                        formControlName="email">
+                </div>
+                <div *ngIf="formularioRegistroAdministrador.get('email')?.invalid && (formularioRegistroAdministrador.get('email')?.dirty || formularioRegistroAdministrador.get('email')?.touched)"
+                    class="alert alert-danger py-1 mt-1">
+                    <div *ngIf="formularioRegistroAdministrador.get('email')?.errors?.['required']">
+                        El correo electronico es requerido.
+                    </div>
+                    <div *ngIf="formularioRegistroAdministrador.get('email')?.errors?.['email']">
+                        El correo electronico debe ser valido.
+                    </div>
+                    <div *ngIf="formularioRegistroAdministrador.get('email')?.errors?.['invalid']">
+                        El correo electronico ya se encuentra registrado.
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row d-flex justify-content-around mb-4 px-2">
+                <div class="form-group col-md-6 pe-2">
+                    <label class="labelAdministrador" for="passwordAdministrador">Contraseña</label>
+                    <input type="password" class="form-control" id="passwordAdministrador" placeholder="Contraseña"
+                        formControlName="contraseña">
+                    <div *ngIf="formularioRegistroAdministrador.get('contraseña')?.invalid && (formularioRegistroAdministrador.get('contraseña')?.dirty || formularioRegistroAdministrador.get('contraseña')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroAdministrador.get('contraseña')?.errors?.['required']">
+                            El campo contraseña es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroAdministrador.get('contraseña')?.errors?.['minlength']">
+                            El campo contraseña debe tener al menos 6 digitos.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 ps-2">
+                    <label class="labelAdministrador" for="repetirPasswordAdministrador">Repetir contraseña</label>
+                    <input type="password" class="form-control" id="repetirPasswordAdministrador"
+                        formControlName="repetirContraseña" placeholder="Repetir Contraseña">
+                    <div *ngIf="formularioRegistroAdministrador.get('repetirContraseña')?.invalid && (formularioRegistroAdministrador.get('repetirContraseña')?.dirty || formularioRegistroAdministrador.get('repetirContraseña')?.touched)"
+                        class="alert alert-danger py-1 mt-1">
+                        <div *ngIf="formularioRegistroAdministrador.get('repetirContraseña')?.errors?.['required']">
+                            El campo repetir contraseña es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroAdministrador.get('repetirContraseña')?.errors?.['minlength']">
+                            El campo repetir contraseña debe tener al menos 6 digitos.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row d-flex justify-content-around mb-4 px-2">
+                <div class="form-group col-md-12 pe-2">
+                    <label class="labelAdministrador" for="imagenPerfilEsp">Imagen de Perfil</label>
+                    <input type="file" class="form-control" id="imagenPerfilEsp">
+                </div>
+            </div>
+
+            <div class="d-flex col-md-12 justify-content-around">
+                <input type="submit" value="Crear administrador" class="btn btn-success">
+                <input type="button" value="Reiniciar Formulario" (click)="limpiarFormulario()"
+                    class="btn btn-secondary">
+            </div>
+        </form>
+    </div>
+</div>

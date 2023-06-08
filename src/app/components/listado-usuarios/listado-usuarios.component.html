@@ -1,0 +1,23 @@
+<section class="container-fluid">
+    <article>
+        <div class="p-2 mb-2 bg-light-dark rounded-3">
+            <div class="container-fluid py-5">
+                <app-tabla-usuarios [usuarios$]="usuarios$" />
+            </div>
+        </div>
+    </article>
+    <article class="d-flex align-items-center flex-column">
+        <div class="col-lg-12 justify-content-around d-flex pt-2">
+            <button type="button" class="btnAlta btnAltaPac" (click)="cambiarFormulario('pacientes')">
+                Alta de Pacientes
+            </button>
+            <button type="button" class="btnAlta btnAltaEsp" (click)="cambiarFormulario('especialistas')">
+                Alta de Especialistas
+            </button>
+            <button type="button" class="btnAlta btnAltaAdm" (click)="cambiarFormulario('administradores')">
+                Alta de Administradores
+            </button>
+        </div>
+        <app-formulario-alta class="col-lg-7" [mostrarFormulario]="mostrarFormulario" />
+    </article>
+</section>

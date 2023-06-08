@@ -1,0 +1,106 @@
+<header>
+    <div class="px-3 py-2 bg-dark text-white">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
+                    <img class="mb-2" src="./assets/miClinica.png" alt="MiClinica" width="96">
+                </a>
+
+
+                <ng-container *ngIf="!usuariosService.hayUsuarioIngresado(); else navIngresado">
+                    <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                        <li class="fs-5">
+                            <a class="d-flex flex-column fw-bold nav-link active text-secondary" aria-current="page"
+                                routerLink="/">
+                                <i class="bi bi-house-door mx-auto mb-1"></i>
+                                Inicio
+                            </a>
+                        </li>
+                        <!-- <li class="fs-5">
+                        <a href="#" class="d-flex flex-column nav-link text-white">
+                            <i class="bi bi-speedometer2 mx-auto mb-1"></i>
+                            Estadisticas
+                        </a>
+                    </li> -->
+
+                        <li class="fs-5">
+                            <a href="#" class="d-flex flex-column fw-bold nav-link text-white">
+                                <i class="bi bi-table mx-auto mb-1"></i>
+                                Turnos
+                            </a>
+                        </li>
+                        <!-- <li class="fs-5">
+                        <a href="#" class="d-flex flex-column nav-link text-white">
+                            <i class="bi bi-grid-3x3 mx-auto mb-1"></i>
+                            Products
+                        </a>
+                    </li> -->
+                    </ul>
+                </ng-container>
+                <ng-template #navIngresado>
+                    <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                        <li class="fs-5">
+                            <a class="d-flex flex-column fw-bold nav-link active text-secondary" aria-current="page"
+                                routerLink="/">
+                                <i class="bi bi-house-door mx-auto mb-1"></i>
+                                Inicio
+                            </a>
+                        </li>
+
+                        <ng-container *ngIf="usuariosService.usuarioIngresado?.isAdmin()">
+                            <li class="fs-5">
+                                <a routerLink="/usuarios" class="d-flex flex-column fw-bold nav-link text-white">
+                                    <i class="bi bi-people-fill mx-auto mb-1"></i>
+                                    Usuarios
+                                </a>
+                            </li>
+                        </ng-container>
+
+                        <!-- <li class="fs-5">
+                        <a href="#" class="d-flex flex-column nav-link text-white">
+                            <i class="bi bi-speedometer2 mx-auto mb-1"></i>
+                            Estadisticas
+                        </a>
+                    </li> -->
+                        <li class="fs-5">
+                            <a href="#" class="d-flex flex-column fw-bold nav-link text-white">
+                                <i class="bi bi-table mx-auto mb-1"></i>
+                                Turnos
+                            </a>
+                        </li>
+                        <!-- <li class="fs-5">
+                        <a href="#" class="d-flex flex-column nav-link text-white">
+                            <i class="bi bi-grid-3x3 mx-auto mb-1"></i>
+                            Products
+                        </a>
+                    </li> -->
+                        <li class="fs-5">
+                            <a href="#" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"
+                                class="d-flex flex-column fw-bold nav-link text-white">
+                                <i class="bi bi-person-circle mx-auto mb-1"></i>
+                                Cuenta
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><a class="dropdown-item" href="#">{{usuariosService.usuarioIngresado?.nombre}}</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#" (click)="usuariosService.cerrarSesionUsuario()">Cerrar sesion</a></li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+    <div class="px-3 py-2 border-bottom mb-3">
+        <div class="container d-flex flex-wrap justify-content-center">
+            <div class="text-end">
+                <button type="button" routerLink="/ingresar" class="btn btn-light text-dark me-2">Ingresar</button>
+                <button type="button" routerLink="/registro" class="btn btn-primary">Registrarse</button>
+            </div>
+        </div>
+    </div>
+</header>
