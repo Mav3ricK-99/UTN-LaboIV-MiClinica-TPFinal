@@ -1,0 +1,106 @@
+<div class="modal fade col-md-5" id="modalEncuesta" tabindex="-1" aria-labelledby="modalEncuestaLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 *ngIf="!turno?.existeEncuesta();else mensajeVerEncuesta" class="w-100 modal-title fs-5 text-center"
+                    id="modalEncuestaLabel">Complete una breve encuesta para
+                    mejorar. <br>Gracias por tu tiempo!</h1>
+                <ng-template #mensajeVerEncuesta>
+                    <h1 *ngIf="turno" class="w-100 modal-title fs-5 text-center" id="modalEncuestaLabel">Aqui la encuesta completada
+                        por {{turno.paciente.nombre}}</h1>
+                </ng-template>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" #botonCierreModal
+                    aria-label="Close"></button>
+            </div>
+            <form [formGroup]="formularioEncuestaTurno" (ngSubmit)="enviarEncuesta()">
+                <div class="modal-body">
+                    <div class="d-flex flex-column align-items-around">
+                        <div class="form-group col-md-12">
+                            <div class="d-flex flex-column align-items-center">
+                                <label>Calificacion de nuestras instalaciones</label>
+                                <ngb-rating formControlName="puntajeInstalaciones"
+                                    (leave)="cambiarMensajeCalificacion('puntajeInstalaciones')"
+                                    (hover)="cambioRate($event, 'instalaciones')">
+                                    <ng-template let-fill="fill" let-index="index">
+                                        <i class="bi-star{{fill === 100 ? '-fill' : ''}}"
+                                            [class.filled]="fill === 100"></i>
+                                    </ng-template>
+                                </ngb-rating>
+
+                                <div *ngIf="formularioEncuestaTurno.get('puntajeInstalaciones')?.invalid && (formularioEncuestaTurno.get('puntajeInstalaciones')?.dirty || formularioEncuestaTurno.get('puntajeInstalaciones')?.touched)"
+                                    class="alert alert-danger mt-3">
+                                    <div
+                                        *ngIf="formularioEncuestaTurno.get('puntajeInstalaciones')?.errors?.['required']">
+                                        El puntaje es requerido
+                                    </div>
+                                </div>
+                                <h5 *ngIf="!turno?.existeEncuesta()" class="h6 p-2">{{calificacionInstalaciones}}</h5>
+                            </div>
+
+                            <label for="descripcionCalificar">Que le parecio nuestras instalaciones.</label>
+                            <textarea class="form-control" id="descripcionCalificar"
+                                placeholder="Muy buena iluminacion..."
+                                formControlName="descripcionInstalacines"> </textarea>
+                            <div *ngIf="formularioEncuestaTurno.get('descripcionInstalaciones')?.invalid && (formularioEncuestaTurno.get('descripcionInstalaciones')?.dirty || formularioEncuestaTurno.get('descripcionInstalaciones')?.touched)"
+                                class="alert alert-danger mt-3">
+                                <div
+                                    *ngIf="formularioEncuestaTurno.get('descripcionInstalaciones')?.errors?.['minlength']">
+                                    El campo descripcion de las instalaciones debe contener al menos 6 digitos.
+                                </div>
+                                <div
+                                    *ngIf="formularioEncuestaTurno.get('descripcionInstalaciones')?.errors?.['maxlength']">
+                                    El campo descripcion de las instalaciones debe contener como maximo 255 caracteres.
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <div class="d-flex flex-column align-items-center">
+                                <label>Calificacion de servicio de asistencia brindado</label>
+                                <ngb-rating formControlName="puntajeRecepcion"
+                                    (leave)="cambiarMensajeCalificacion('puntajeRecepcion')"
+                                    (hover)="cambioRate($event, 'recepcion')">
+                                    <ng-template let-fill="fill" let-index="index">
+                                        <i class="bi-star{{fill === 100 ? '-fill' : ''}}"
+                                            [class.filled]="fill === 100"></i>
+                                    </ng-template>
+                                </ngb-rating>
+
+                                <div *ngIf="formularioEncuestaTurno.get('puntajeRecepcion')?.invalid && (formularioEncuestaTurno.get('puntajeRecepcion')?.dirty || formularioEncuestaTurno.get('puntajeRecepcion')?.touched)"
+                                    class="alert alert-danger mt-3">
+                                    <div *ngIf="formularioEncuestaTurno.get('puntajeRecepcion')?.errors?.['required']">
+                                        El puntaje es requerido
+                                    </div>
+                                </div>
+                                <h5 *ngIf="!turno?.existeEncuesta()" class="h6 p-2">{{calificacionRecepcion}}</h5>
+                            </div>
+
+                            <label for="descripcionCalificar">Como fue la atencion que le brindaron en la
+                                recepcion.</label>
+                            <textarea class="form-control" id="descripcionCalificar"
+                                placeholder="Me atendieron rapido..."
+                                formControlName="descripcionRecepcion"> </textarea>
+                            <div *ngIf="formularioEncuestaTurno.get('descripcionRecepcion')?.invalid && (formularioEncuestaTurno.get('descripcionRecepcion')?.dirty || formularioEncuestaTurno.get('descripcionRecepcion')?.touched)"
+                                class="alert alert-danger mt-3">
+                                <div *ngIf="formularioEncuestaTurno.get('descripcionRecepcion')?.errors?.['minlength']">
+                                    El campo descripcion de el servicio en recepcion debe contener al menos 6 digitos.
+                                </div>
+                                <div *ngIf="formularioEncuestaTurno.get('descripcionRecepcion')?.errors?.['maxlength']">
+                                    El campo descripcion de el servicio en recepcion debe contener como maximo 255
+                                    caracteres.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Descartar cambios</button>
+                    <button type="submit" class="btn btn-primary" *ngIf="!turno?.existeEncuesta()">Enviar
+                        encuesta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

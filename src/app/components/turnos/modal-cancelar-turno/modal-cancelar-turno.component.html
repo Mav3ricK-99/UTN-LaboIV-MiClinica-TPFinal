@@ -1,0 +1,41 @@
+<div class="modal fade col-md-5" id="modalCancelarTurno" tabindex="-1" aria-labelledby="modalCancelarTurnoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" *ngIf="turno" id="modalCancelarTurnoLabel">Cancelacion del turno con
+                    {{soyPaciente ? turno.especialista.nombre : turno.paciente.nombre}}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" #botonCierreModalCancelarTurno
+                    aria-label="Close"></button>
+            </div>
+            <form [formGroup]="formularioCancelarTurno" (ngSubmit)="cancelarTurno()">
+                <div class="modal-body">
+                    <div class="form-row d-flex justify-content-around mb-4">
+                        <div class="form-group col-md-12">
+                            <label for="descripcionCancelar">Especifique la
+                                razon de la cancelacion del turno.</label>
+                            <textarea class="form-control" id="descripcionCancelar"
+                                placeholder="Cancele el turno porque..." formControlName="descripcion"> </textarea>
+                            <div *ngIf="formularioCancelarTurno.get('descripcion')?.invalid && (formularioCancelarTurno.get('descripcion')?.dirty || formularioCancelarTurno.get('descripcion')?.touched)"
+                                class="alert alert-danger mt-3">
+                                <div *ngIf="formularioCancelarTurno.get('descripcion')?.errors?.['required']">
+                                    El campo descripcion del rechazo es requerido.
+                                </div>
+                                <div *ngIf="formularioCancelarTurno.get('descripcion')?.errors?.['minlength']">
+                                    El campo descripcion debe contener al menos 6 digitos.
+                                </div>
+                                <div *ngIf="formularioCancelarTurno.get('descripcion')?.errors?.['maxlength']">
+                                    El campo descripcion debe contener como maximo 255 caracteres.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Descartar cambios</button>
+                    <button type="submit" class="btn btn-primary">Cancelar turno</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

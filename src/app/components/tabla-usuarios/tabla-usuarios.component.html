@@ -1,56 +1,58 @@
-<table class="table table-striped">
-    <thead>
-        <tr class="table-dark">
-            <th scope="col">Nombre</th>
-            <th scope="col">DNI</th>
-            <th scope="col">Edad</th>
-            <th scope="col">Correo electronico</th>
-            <th scope="col">Especialidad / Obra social</th>
-            <th scope="col">N° Matricula profesional / N° Afiliado</th>
-            <th scope="col">Habilitar acceso especialista</th>
-            <th scope="col">Tipo de usuario</th>
-        </tr>
-    </thead>
-    <tbody *ngIf="(usuarios$ | async) as usuarios; else loader">
-        <ng-container *ngIf="usuarios.length > 0; else noHayUsuarios">
-            <tr *ngFor="let usuario of usuarios">
-                <ng-container *ngIf="usuario.tipoUsuario == 'paciente'; else especialista">
-                    <td>{{usuario.nombre}}</td>
-                    <td>{{usuario.dni}}</td>
-                    <td>{{usuario.edad}}</td>
-                    <td>{{usuario.email}}</td>
-                    <td>{{(usuario | castToPaciente).obraSocial}}</td>
-                    <td>{{(usuario | castToPaciente).nroAfiliado}}</td>
-                    <td></td>
-                    <td>{{usuario.tipoUsuario}}</td>
-                </ng-container>
-                <ng-template #especialista [usuaria]>
-                    <td>{{usuario.nombre}}</td>
-                    <td>{{usuario.dni}}</td>
-                    <td>{{usuario.edad}}</td>
-                    <td>{{usuario.email}}</td>
-                    <td>{{(usuario | castToEspecialista).especialidad}}</td>
-                    <td>{{(usuario | castToEspecialista).nroMatricula}}</td>
-                    <td><input class="form-check-input" type="checkbox" [checked]="usuario.cuentaHabilitada"
-                            (change)="habilitarCuenta(usuario)"></td>
-                    <td>{{usuario.tipoUsuario}}</td>
-                </ng-template>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr class="table-dark">
+                <th scope="col">Nombre</th>
+                <th scope="col">DNI</th>
+                <th scope="col">Edad</th>
+                <th scope="col">Correo electronico</th>
+                <th scope="col">Especialidad / Obra social</th>
+                <th scope="col">N° Matricula profesional / N° Afiliado</th>
+                <th scope="col">Habilitar acceso especialista</th>
+                <th scope="col">Tipo de usuario</th>
             </tr>
-        </ng-container>
-        <ng-template #noHayUsuarios>
-            <tr>
-                <td colspan="8" align="center">No se encontraron usuarios que mostrar.</td>
-            </tr>
-        </ng-template>
-    </tbody>
-    <ng-template #loader>
-        <tbody>
-            <tr>
-                <td colspan="8" align="center">Cargando... (Si recien inicio sesion y no cargan los Usuarios, presione
-                    F5)
-                </td>
-            </tr>
+        </thead>
+        <tbody *ngIf="(usuarios$ | async) as usuarios; else loader">
+            <ng-container *ngIf="usuarios.length > 0; else noHayUsuarios">
+                <tr *ngFor="let usuario of usuarios">
+                    <ng-container *ngIf="usuario.tipoUsuario == 'paciente'; else especialista">
+                        <td>{{usuario.nombre}}</td>
+                        <td>{{usuario.dni}}</td>
+                        <td>{{usuario.edad}}</td>
+                        <td>{{usuario.email}}</td>
+                        <td>{{(usuario | castToPaciente).obraSocial}}</td>
+                        <td>{{(usuario | castToPaciente).nroAfiliado}}</td>
+                        <td></td>
+                        <td>{{usuario.tipoUsuario}}</td>
+                    </ng-container>
+                    <ng-template #especialista [usuaria]>
+                        <td>{{usuario.nombre}}</td>
+                        <td>{{usuario.dni}}</td>
+                        <td>{{usuario.edad}}</td>
+                        <td>{{usuario.email}}</td>
+                        <td>{{(usuario | castToEspecialista).especialidad}}</td>
+                        <td>{{(usuario | castToEspecialista).nroMatricula}}</td>
+                        <td><input class="form-check-input" type="checkbox" [checked]="usuario.cuentaHabilitada"
+                                (change)="habilitarCuenta(usuario)"></td>
+                        <td>{{usuario.tipoUsuario}}</td>
+                    </ng-template>
+                </tr>
+            </ng-container>
+            <ng-template #noHayUsuarios>
+                <tr>
+                    <td colspan="8" align="center">No se encontraron usuarios que mostrar.</td>
+                </tr>
+            </ng-template>
         </tbody>
-    </ng-template>
-
-</table>
+        <ng-template #loader>
+            <tbody>
+                <tr>
+                    <td colspan="8" align="center">Cargando... (Si recien inicio sesion y no cargan los Usuarios,
+                        presione
+                        F5)
+                    </td>
+                </tr>
+            </tbody>
+        </ng-template>
+    </table>
+</div>

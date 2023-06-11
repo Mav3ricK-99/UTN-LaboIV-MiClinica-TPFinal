@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { Usuario } from 'src/app/classes/usuarios/usuario';
 import { Paciente } from 'src/app/classes/usuarios/paciente/paciente';
 import { Especialista } from 'src/app/classes/usuarios/especialista/especialista';
+import { beforeAuthStateChanged, getAdditionalUserInfo } from '@angular/fire/auth';
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 @Injectable()
 
@@ -17,6 +19,26 @@ export class UsuarioService {
 
   constructor(private firestore: Firestore, private afAuth: AngularFireAuth, private router: Router) {
     this.usuariosCollection = collection(this.firestore, 'usuarios');
+
+    const auth = getAuth();
+    beforeAuthStateChanged(auth, (user) => {
+      const lastSignIn = user?.metadata.lastSignInTime;
+      let lastSignInMil = 0;
+      if (lastSignIn) {
+        lastSignInMil = Date.parse(lastSignIn) - (10800 * 100);
+      }
+      const horaActualMil = new Date();
+
+      let diferenciaEnSegundos = (Math.floor(lastSignInMil / 1000) - Math.floor(horaActualMil.getTime() / 1000)) / 60;
+      const entroPorUltimaVezHace5Minutos = (diferenciaEnSegundos < 300 && diferenciaEnSegundos >= 0) || (diferenciaEnSegundos > -300 && diferenciaEnSegundos <= 0) //Si entro por ultima vez en los ultimos 5 minutos
+
+      if (user && user.emailVerified !== true && !entroPorUltimaVezHace5Minutos) {
+        throw {
+          code: "auth/login-blocked",
+          error: new Error()
+        };
+      }
+    });
 
     this.getUsuarioDeLocalStorage();
 
@@ -103,9 +125,8 @@ export class UsuarioService {
     });
   }
 
-  async registrarUsuario(nuevoUsuario: Usuario, password: string) {
-    let error = '';
-    await this.afAuth.createUserWithEmailAndPassword(nuevoUsuario.email, password).then((res) => {
+  registrarUsuario(nuevoUsuario: Usuario, password: string) {
+    return this.afAuth.createUserWithEmailAndPassword(nuevoUsuario.email, password).then((res) => {
       if (res.user) {
         if (nuevoUsuario instanceof Paciente) {
           this.crearPaciente(nuevoUsuario, res.user.uid)
@@ -116,35 +137,14 @@ export class UsuarioService {
         }
         res.user.sendEmailVerification();
       }
-    }).catch(e => {
-      error = e;
+      return res;
     })
-
-    if (error) {
-      return { error: error }
-    } else {
-      return nuevoUsuario;
-    }
   }
 
   async ingresarUsuario(email: string, password: string) {
     const auth = getAuth();
-    let errorResponse: string = "";
 
-    await signInWithEmailAndPassword(auth, email, password).then((res) => {
-      if (res.user.emailVerified !== true) {
-        throw {
-          code: "auth/unverified-email",
-          error: new Error()
-        };
-      }
-    }).catch((error) => {
-      errorResponse = error.code;
-    })
-
-    return {
-      error: errorResponse
-    }
+    await signInWithEmailAndPassword(auth, email, password);
   }
 
   async cerrarSesionUsuario() {
@@ -154,33 +154,24 @@ export class UsuarioService {
   }
 
   armarUsuario(data: any): Usuario {
-    let usuario = new Usuario(data['uid'], data['nombre'], data['edad'], data['dni'], data['email']);
+    let usuario = new Usuario(data['uid'], data['nombre'], data['edad'], data['dni'], data['email'], data['cuentaHabilitada'], data['pathImagen']);
     if (data['tipoUsuario'] == 'admin') {
       usuario.tipoUsuario = 'admin';
     }
-    /* usuario.setFechaRegistro(data['creationTime']);
-    usuario.setFechaRegistro(data['lastLogin']); */
-    //usuario.setRole(data['role'] ?? 'empleado');
 
     return usuario;
   }
 
   armarPaciente(data: any): Paciente {
-    let paciente = new Paciente(data['uid'], data['nombre'], data['edad'], data['dni'], data['email'], data['obraSocial'], data['nroAfiliado']);
+    let paciente = new Paciente(data['uid'], data['nombre'], data['edad'], data['dni'], data['email'], data['cuentaHabilitada'], data['pathImagen'], data['obraSocial'], data['nroAfiliado']);
     paciente.tipoUsuario = data['tipoUsuario'];
-    /* usuario.setFechaRegistro(data['creationTime']);
-    usuario.setFechaRegistro(data['lastLogin']); */
-    //usuario.setRole(data['role'] ?? 'empleado');
 
     return paciente;
   }
 
   armarEspecialista(data: any): Especialista {
-    let especialista = new Especialista(data['uid'], data['nombre'], data['edad'], data['dni'], data['email'], data['especialidad'], data['nroMatricula']);
+    let especialista = new Especialista(data['uid'], data['nombre'], data['edad'], data['dni'], data['email'], data['cuentaHabilitada'], data['pathImagen'], data['especialidad'], data['nroMatricula']);
     especialista.tipoUsuario = data['tipoUsuario'];
-    /* usuario.setFechaRegistro(data['creationTime']);
-    usuario.setFechaRegistro(data['lastLogin']); */
-    //usuario.setRole(data['role'] ?? 'empleado');
 
     return especialista;
   }
@@ -201,5 +192,24 @@ export class UsuarioService {
 
   hayUsuarioIngresado(): boolean {
     return this.usuarioIngresado != null;
+  }
+
+  actualizarPathImagenPerfil(uid: string, fullPath: string) {
+    console.log(fullPath);
+    const documento = doc(this.firestore, `usuarios`, uid);
+    return updateDoc(documento, {
+      pathImagen: fullPath
+    });
+  }
+
+  subirFotoUsuario(uid: string, foto: File) {
+    let fechaHoy = new Date().toJSON();
+    const filePath = `usuarios/perfiles/${fechaHoy}_${foto.name}`;
+    const storage = getStorage();
+    const storageRef = ref(storage, filePath);
+
+    return uploadBytes(storageRef, foto).then((snapshot) => {
+      this.actualizarPathImagenPerfil(uid, snapshot.metadata.fullPath)
+    });
   }
 }

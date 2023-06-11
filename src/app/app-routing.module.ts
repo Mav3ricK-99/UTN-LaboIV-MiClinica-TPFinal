@@ -22,6 +22,11 @@ const routes: Routes = [
     canActivate: [isAdminGuard]
   },
   {
+    path: 'turnos',
+    loadChildren: () => import('./modules/turnos/turnos/turnos.module').then(m => m.TurnosModule),
+    //canActivate: [isAdminGuard]
+  },
+  {
     path: '',
     component: HomeComponent,
     title: 'MiClinica - Pagina principal'

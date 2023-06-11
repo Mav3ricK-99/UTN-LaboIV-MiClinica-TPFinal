@@ -6,7 +6,6 @@
                     <img class="mb-2" src="./assets/miClinica.png" alt="MiClinica" width="96">
                 </a>
 
-
                 <ng-container *ngIf="!usuariosService.hayUsuarioIngresado(); else navIngresado">
                     <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
                         <li class="fs-5">
@@ -24,7 +23,7 @@
                     </li> -->
 
                         <li class="fs-5">
-                            <a href="#" class="d-flex flex-column fw-bold nav-link text-white">
+                            <a href="#" class="d-flex flex-column fw-bold nav-link text-white" routerLink="/turnos">
                                 <i class="bi bi-table mx-auto mb-1"></i>
                                 Turnos
                             </a>
@@ -63,7 +62,7 @@
                         </a>
                     </li> -->
                         <li class="fs-5">
-                            <a href="#" class="d-flex flex-column fw-bold nav-link text-white">
+                            <a href="#" class="d-flex flex-column fw-bold nav-link text-white" routerLink="/turnos">
                                 <i class="bi bi-table mx-auto mb-1"></i>
                                 Turnos
                             </a>
@@ -95,7 +94,7 @@
             </div>
         </div>
     </div>
-    <div class="px-3 py-2 border-bottom mb-3">
+    <div *ngIf="!usuariosService.hayUsuarioIngresado()" class="px-3 py-2 border-bottom mb-3">
         <div class="container d-flex flex-wrap justify-content-center">
             <div class="text-end">
                 <button type="button" routerLink="/ingresar" class="btn btn-light text-dark me-2">Ingresar</button>

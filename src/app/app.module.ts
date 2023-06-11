@@ -14,9 +14,10 @@ import { RegisterComponent } from './components/register/register.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { HomeComponent } from './components/home/home/home.component';
 import { UsuarioService } from './services/usuarios/usuarios.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormularioAltaComponent } from './components/usuarios/formulario-alta/formulario-alta.component';
 import { UsuariosSharedModule } from './modules/shared/usuarios-shared/usuarios-shared.module';
+import { FormSharedModule } from './modules/shared/form-shared/form-shared.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,7 +34,9 @@ import { UsuariosSharedModule } from './modules/shared/usuarios-shared/usuarios-
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     BrowserAnimationsModule,
-    UsuariosSharedModule
+    UsuariosSharedModule,
+    FormSharedModule,
+    NgbModule
   ],
   providers: [UsuarioService, { provide: FIREBASE_OPTIONS, useValue: environment.firebase }],
   bootstrap: [AppComponent]

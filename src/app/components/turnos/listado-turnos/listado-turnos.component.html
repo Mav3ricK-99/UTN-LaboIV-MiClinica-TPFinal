@@ -1,0 +1,23 @@
+<section class="container-fluid">
+    <article>
+        <div class="p-2 mb-2 bg-light-dark rounded-3">
+            <div class="container-fluid py-5">
+                <container-element [ngSwitch]="usuariosService.usuarioIngresado?.tipoUsuario">
+                    <ng-container *ngSwitchCase="'paciente'">
+                        <h3 class="text-center p-2">Mis turnos</h3>
+                        <app-tabla-turnos-paciente />
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'especialista'">
+                        <h3 class="text-center p-2">Mis turnos asignados</h3>
+                        <app-tabla-turnos-especialista />
+                    </ng-container>
+                    <app-tabla-turnos-administrador *ngSwitchCase="'admin'" />
+
+                </container-element>
+            </div>
+        </div>
+    </article>
+    <article class="d-flex align-items-center flex-column">
+
+    </article>
+</section>

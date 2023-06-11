@@ -33,6 +33,7 @@ export class FormularioAltaComponent {
       obraSocial: new FormControl('', [Validators.required, Validators.minLength(3)]),
       nroAfiliado: new FormControl('', []),
       email: new FormControl('', [Validators.required, Validators.email]),
+      imagenPerfil: new FormControl(null, [Validators.required]),
       contraseña: new FormControl('', [Validators.required, Validators.minLength(6)]),
       repetirContraseña: new FormControl('', [Validators.required, Validators.minLength(6)]),
     });
@@ -64,7 +65,7 @@ export class FormularioAltaComponent {
     if (!this.formularioRegistroPaciente.valid) return;
 
     let nombre = this.formularioRegistroPaciente.get('nombre')?.value;
-    nombre += this.formularioRegistroPaciente.get('apellido')?.value;
+    nombre += " " + this.formularioRegistroPaciente.get('apellido')?.value;
 
     let edad = this.formularioRegistroPaciente.get('edad')?.value;
     let dni = this.formularioRegistroPaciente.get('documento')?.value;
@@ -73,11 +74,18 @@ export class FormularioAltaComponent {
     let email = this.formularioRegistroPaciente.get('email')?.value;
 
     let password = this.formularioRegistroPaciente.get('contraseña')?.value;
+    const imagenPerfil = this.formularioRegistroPaciente.get('imagenPerfil')?.value;
 
-    let nuevoPaciente = new Paciente("0", nombre, dni, edad, email, obraSocial, nroAfiliado);
-
-    this.usuarioService.registrarUsuario(nuevoPaciente, password).then(() => {
+    let nuevoPaciente = new Paciente("0", nombre, dni, edad, email, true, '', obraSocial, nroAfiliado);
+    this.usuarioService.registrarUsuario(nuevoPaciente, password).then((res: any) => {
       this.mostrarModal('Paciente agregado', 'success', 'Un nuevo paciente se agrego al sistema!');
+      this.usuarioService.subirFotoUsuario(res.user.uid, imagenPerfil);
+    }).catch((error) => {
+      if (error.code == 'auth/email-already-in-use') {
+        this.formularioRegistroPaciente.controls['email'].setErrors({
+          'invalid': true
+        });
+      }
     });
   }
 
@@ -94,11 +102,19 @@ export class FormularioAltaComponent {
     let email = this.formularioRegistroEspecialista.get('email')?.value;
 
     let password = this.formularioRegistroEspecialista.get('contraseña')?.value;
-
+    const imagenPerfil = this.formularioRegistroPaciente.get('imagenPerfil')?.value;
     let nuevoEspecialista = new Especialista("0", nombre, dni, edad, email, especialidad, nroMatricula);
 
-    this.usuarioService.registrarUsuario(nuevoEspecialista, password).then(() => {
+    this.usuarioService.registrarUsuario(nuevoEspecialista, password).then((res: any) => {
       this.mostrarModal('Especialista agregado', 'success', 'Un nuevo especialista se agrego al sistema!');
+      this.usuarioService.subirFotoUsuario(res.user.uid, imagenPerfil);
+      //this.router.navigateByUrl('/');
+    }).catch((error) => {
+      if (error.code == 'auth/email-already-in-use') {
+        this.formularioRegistroPaciente.controls['email'].setErrors({
+          'invalid': true
+        });
+      }
     });
   }
 
@@ -113,12 +129,20 @@ export class FormularioAltaComponent {
     let email = this.formularioRegistroAdministrador.get('email')?.value;
 
     let password = this.formularioRegistroAdministrador.get('contraseña')?.value;
+    const imagenPerfil = this.formularioRegistroPaciente.get('imagenPerfil')?.value;
 
     let nuevoAdministrador = new Usuario("0", nombre, dni, edad, email);
     nuevoAdministrador.tipoUsuario = 'admin';
 
-    this.usuarioService.registrarUsuario(nuevoAdministrador, password).then(() => {
+    this.usuarioService.registrarUsuario(nuevoAdministrador, password).then((res: any) => {
       this.mostrarModal('Administrador agregado', 'success', 'Un nuevo administrador se agrego al sistema!');
+      this.usuarioService.subirFotoUsuario(res.user.uid, imagenPerfil);
+    }).catch((error) => {
+      if (error.code == 'auth/email-already-in-use') {
+        this.formularioRegistroPaciente.controls['email'].setErrors({
+          'invalid': true
+        });
+      }
     });
   }
 
@@ -139,5 +163,15 @@ export class FormularioAltaComponent {
       this.formularioRegistroEspecialista.reset();
       this.formularioRegistroPaciente.reset();
     })
+  }
+
+  subioImagenPerfil(event: any) {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files?.length > 0) {
+      const file: File = event.target.files[0];
+      this.formularioRegistroPaciente.patchValue({
+        imagenPerfil: file
+      });
+    }
   }
 }

@@ -1,0 +1,41 @@
+<div class="modal fade col-md-5" id="modalRechazarTurno" tabindex="-1" aria-labelledby="modalRechazarTurnoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" *ngIf="turno" id="modalRechazarTurnoLabel">Rechazo del turno con
+                    {{turno.paciente.nombre}}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" #botonCierreModal
+                    aria-label="Close"></button>
+            </div>
+            <form [formGroup]="formularioRechazarTurno" (ngSubmit)="rechazarTurno()">
+                <div class="modal-body">
+                    <div class="form-row d-flex justify-content-around mb-4">
+                        <div class="form-group col-md-12">
+                            <label for="descripcionRechazar">Especifique la
+                                razon del rechazo del turno.</label>
+                            <textarea class="form-control" id="descripcionRechazar"
+                                placeholder="EL paciente no especifico..." formControlName="descripcion"> </textarea>
+                            <div *ngIf="formularioRechazarTurno.get('descripcion')?.invalid && (formularioRechazarTurno.get('descripcion')?.dirty || formularioRechazarTurno.get('descripcion')?.touched)"
+                                class="alert alert-danger mt-3">
+                                <div *ngIf="formularioRechazarTurno.get('descripcion')?.errors?.['required']">
+                                    El campo descripcion del rechazo es requerido.
+                                </div>
+                                <div *ngIf="formularioRechazarTurno.get('descripcion')?.errors?.['minlength']">
+                                    El campo descripcion debe contener al menos 6 digitos.
+                                </div>
+                                <div *ngIf="formularioRechazarTurno.get('descripcion')?.errors?.['maxlength']">
+                                    El campo descripcion debe contener como maximo 255 caracteres.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Descartar cambios</button>
+                    <button type="submit" class="btn btn-primary">Rechazar turno</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

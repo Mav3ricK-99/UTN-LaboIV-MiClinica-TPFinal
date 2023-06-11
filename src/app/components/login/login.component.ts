@@ -28,21 +28,19 @@ export class LoginComponent {
     let email = this.formularioIngreso.get('email')?.value;
     let password = this.formularioIngreso.get('contraseña')?.value;
 
-    this.usuarioService.ingresarUsuario(email, password).then((resp) => {
-      console.log(resp);
-      switch (resp.error) {
+    this.usuarioService.ingresarUsuario(email, password).then(() => {
+      this.router.navigate(['/']);
+    }).catch((error) => {
+      switch (error.code) {
         case "auth/wrong-password": {
           this.formularioIngreso.controls['contraseña'].setErrors({
             'invalid': true
           })
         }; break;
-        case "auth/unverified-email": {
+        case "auth/login-blocked": {
           this.formularioIngreso.controls['contraseña'].setErrors({
             'unverified': true
           })
-        }; break;
-        default: {
-          this.router.navigate(['/']);
         }; break;
       }
     });
