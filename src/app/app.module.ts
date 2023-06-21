@@ -11,7 +11,7 @@ import { LoginComponent } from './components/login/login.component';
 import { NavComponent } from './components/util/nav/nav.component';
 import { FooterComponent } from './components/util/footer/footer.component';
 import { RegisterComponent } from './components/register/register.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations'
 import { HomeComponent } from './components/home/home/home.component';
 import { UsuarioService } from './services/usuarios/usuarios.service';
 import { UsuariosSharedModule } from './modules/shared/usuarios-shared/usuarios-shared.module';
@@ -36,7 +36,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     BrowserAnimationsModule,
     UsuariosSharedModule,
     FormSharedModule,
-    NgbModule
+    NgbModule,
+    NoopAnimationsModule
   ],
   providers: [UsuarioService, { provide: FIREBASE_OPTIONS, useValue: environment.firebase }],
   bootstrap: [AppComponent]

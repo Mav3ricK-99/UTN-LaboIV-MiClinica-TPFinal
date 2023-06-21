@@ -1,0 +1,77 @@
+<article class="d-flex align-items-center flex-column">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSolicitarTurno">Solicitar
+        Turno</button>
+</article>
+
+<div class="modal fade col-md-5" id="modalSolicitarTurno" tabindex="-1" aria-labelledby="modalSolicitarTurnoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalSolicitarTurnoLabel">Nuevo turno</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" #botonCierreModal
+                    aria-label="Close"></button>
+            </div>
+            <form [formGroup]="formularioSolicitarTurno" (ngSubmit)="solicitarTurno()">
+                <div class="modal-body">
+                    <div class="d-flex flex-column justify-content-around">
+                        <div class="form-group col-md-12">
+                            <label for="especialidad">Elegi una de nuestras especialidades</label>
+                            <input id="especialidad" type="text" class="form-control" formControlName="especialidad"
+                                [ngbTypeahead]="buscarEspecialidad" (focus)="focus$.next($any($event).target.value)"
+                                (click)="click$.next($any($event).target.value)" #selectEsp="ngbTypeahead" />
+                        </div>
+
+                        <div class="form-group col-md-12 mb-3">
+                            <label for="especialistas"
+                                class="col-xs-3 col-sm-auto col-form-label">Especialistas:</label>
+                            <div class="col">
+                                <input id="especialistas" type="text" class="form-control" [resultTemplate]="rt"
+                                    [inputFormatter]="formatter" formControlName="especialista"
+                                    [ngbTypeahead]="buscarEspecialista" [editable]="false" />
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12 mb-3">
+                            <ngb-datepicker [displayMonths]="mesesDatepicker" [navigation]="'none'"
+                                [maxDate]="fechaMaxNgb" [minDate]="fechaHoyNgb" [showWeekNumbers]="false"
+                                formControlName="fechaTurno" [outsideDays]="'visible'">
+                            </ngb-datepicker>
+                        </div>
+
+                        <div class="form-group col-md-12 mb-3">
+
+                            <ng-template #rt let-r="result" let-t="term">
+                                <ngb-highlight [result]="r.nombre" [term]="t"></ngb-highlight>
+                            </ng-template>
+
+                            <div class="m-2 d-flex flex-column align-items-center">
+                                <label>Horario del turno</label>
+                                <ngb-timepicker [minuteStep]="minutosTurno" formControlName="horarioTurno"
+                                    required></ngb-timepicker>
+                                <div *ngIf="formularioSolicitarTurno.get('horarioTurno')?.invalid && (formularioSolicitarTurno.get('horarioTurno')?.dirty || formularioSolicitarTurno.get('horarioTurno')?.touched)"
+                                    class="alert alert-danger mt-3">
+                                    <div *ngIf="formularioSolicitarTurno.get('horarioTurno')?.errors?.['required']">
+                                        El horario para el turno es requerido.</div>
+                                    <div *ngIf="formularioSolicitarTurno.get('horarioTurno')?.errors?.['tooLate']">Oh
+                                        Por favor, elija un turno entre las 8:00AM y 14:00PM</div>
+                                    <div *ngIf="formularioSolicitarTurno.get('horarioTurno')?.errors?.['tooEarly']">It's
+                                        Por favor, elija un turno entre las 8:00AM y 14:00PM</div>
+                                </div>
+
+                                <div *ngIf="formularioSolicitarTurno.errors?.['noDisponible'] && (formularioSolicitarTurno.touched || formularioSolicitarTurno.dirty)"
+                                    class="alert alert-danger mt-3">
+                                    La fecha solicitada no se encuentra disponible para este Especialista.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Confirmar nuevo Turno</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { CollectionReference, DocumentData, Firestore, addDoc, collection, collectionData, deleteDoc, doc, getDoc, setDoc, updateDoc } from '@angular/fire/firestore';
+import { CollectionReference, DocumentData, Firestore, addDoc, collection, collectionData, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
 import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { Usuario } from 'src/app/classes/usuarios/usuario';
+import { map } from 'rxjs';
 import { Paciente } from 'src/app/classes/usuarios/paciente/paciente';
 import { Especialista } from 'src/app/classes/usuarios/especialista/especialista';
 import { beforeAuthStateChanged, getAdditionalUserInfo } from '@angular/fire/auth';
@@ -69,14 +70,6 @@ export class UsuarioService {
   traerTodos() {
     return collectionData(this.usuariosCollection, { idField: 'uid' });
   }
-  /*
-    
-    ESTO NO VA. VA EN UN SERVICE SEPARADO POR EL TIPO DE USUARIO
-    eliminarUsuario(usuario: Usuario) {
-      const documento = doc(this.firestore, `usuarios/${usuario.getId()}`);
-      return deleteDoc(documento);
-    }
-  */
   //console.log(this.afAuth.user.subscribe((e) => console.log(e))) Otra forma de obtener el logeado
   async traerUsuario(id: string) {
     const documento = doc(this.firestore, `usuarios/${id}`);
@@ -211,5 +204,27 @@ export class UsuarioService {
     return uploadBytes(storageRef, foto).then((snapshot) => {
       this.actualizarPathImagenPerfil(uid, snapshot.metadata.fullPath)
     });
+  }
+
+  buscarUsuario(nombreUsuario: string, tipoUsuario?: string) {
+
+    let q;
+    if (tipoUsuario) {
+      q = query(this.usuariosCollection, where("tipoUsuario", "==", tipoUsuario));
+    } else {
+      q = query(this.usuariosCollection, where("nombre", "==", nombreUsuario), where("tipoUsuario", "==", tipoUsuario));
+    }
+
+    return collectionData(q, { idField: 'uid' }).pipe(map(collection => {
+      return collection.map(b => {
+        let usuario: Usuario;
+        switch (tipoUsuario) {
+          case 'paciente': usuario = this.armarPaciente(b); break;
+          case 'especialista': usuario = this.armarEspecialista(b); break;
+          default: usuario = this.armarUsuario(b); break;
+        }
+        return usuario;
+      });
+    }));
   }
 }

@@ -9,10 +9,11 @@ import { TablaTurnosPacienteComponent } from 'src/app/components/turnos/tabla-tu
 import { FormSharedModule } from '../../shared/form-shared/form-shared.module';
 import { ModalCancelarTurnoComponent } from 'src/app/components/turnos/modal-cancelar-turno/modal-cancelar-turno.component';
 import { ModalCalificarAtencionComponent } from 'src/app/components/turnos/modal-calificar-atencion/modal-calificar-atencion.component';
-import { NgbRatingModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDatepickerModule, NgbRatingModule, NgbTimepickerModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModalEncuestaTurnoComponent } from 'src/app/components/turnos/modal-encuesta-turno/modal-encuesta-turno.component';
 import { ModalRechazarTurnoComponent } from 'src/app/components/turnos/modal-rechazar-turno/modal-rechazar-turno.component';
 import { ModalFinalizarTurnoComponent } from 'src/app/components/turnos/modal-finalizar-turno/modal-finalizar-turno.component';
+import { SolicitarTurnoComponent } from 'src/app/components/turnos/solicitar-turno/solicitar-turno.component';
 
 
 @NgModule({
@@ -25,13 +26,17 @@ import { ModalFinalizarTurnoComponent } from 'src/app/components/turnos/modal-fi
     ModalCalificarAtencionComponent,
     ModalEncuestaTurnoComponent,
     ModalRechazarTurnoComponent,
-    ModalFinalizarTurnoComponent
+    ModalFinalizarTurnoComponent,
+    SolicitarTurnoComponent
   ],
   imports: [
     CommonModule,
     TurnosRoutingModule,
     FormSharedModule,
-    NgbRatingModule
+    NgbRatingModule,
+    NgbTypeaheadModule,
+    NgbTimepickerModule,
+    NgbDatepickerModule 
   ]
 })
 export class TurnosModule { }
