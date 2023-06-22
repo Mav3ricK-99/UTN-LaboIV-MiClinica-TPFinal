@@ -16,13 +16,13 @@ export class Turno {
     public encuesta: EncuestaTurno;
     public mensaje: string;
 
-    constructor(uid: string, especialidad: string, fecha_turno: Timestamp, detalle?: string, especialista?: Especialista, paciente?: Paciente, estado?: EstadosTurnos) {
+    constructor(uid: string, especialidad: string, fecha_turno: Timestamp | Date, detalle?: string, especialista?: Especialista, paciente?: Paciente, estado?: EstadosTurnos) {
         this.uid = uid;
         this.especialidad = especialidad;
         this.especialista = especialista ?? new Especialista();
         this.paciente = paciente ?? new Paciente();
-        this.fecha_turno = fecha_turno.toDate();
-        this.detalle = detalle ?? 'N/A';
+        fecha_turno instanceof Timestamp ? this.fecha_turno = fecha_turno.toDate() : this.fecha_turno = fecha_turno;
+        this.detalle = detalle && detalle != '' ? detalle : 'N/A';
         this.estado = estado ?? EstadosTurnos.pendiente;
     }
 

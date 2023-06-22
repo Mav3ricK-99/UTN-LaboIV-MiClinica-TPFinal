@@ -20,6 +20,10 @@ export class Usuario {
         this.pathImagen = pathImagen ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png';
     }
 
+    puedeCrearTurnos() {
+        return this.isAdmin() || this.tipoUsuario == 'paciente' ? true : false;
+    }
+
     isAdmin(): boolean {
         return this.tipoUsuario == 'admin';
     }

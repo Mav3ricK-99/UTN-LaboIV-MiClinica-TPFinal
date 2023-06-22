@@ -1,4 +1,4 @@
-import { Turno } from "../../turno/turno";
+import { EstadosTurnos, Turno } from "../../turno/turno";
 import { Usuario } from "../usuario";
 
 export class Especialista extends Usuario {
@@ -40,15 +40,12 @@ export class Especialista extends Usuario {
             fechaProximoTurno.setSeconds(0);
             let horaProximoTurno = fechaProximoTurno.getHours();
 
-            if (fechaProximoTurno.getDay() == 0 || (horaProximoTurno < 8 || horaProximoTurno > 15)) {
+            if (fechaProximoTurno.getDay() == 0 || (horaProximoTurno < 8 || horaProximoTurno > 14)) {
                 let fechaAlt = new Date(fechaProximoTurnoMili);
                 fechaAlt.setHours(8);
                 fechaAlt.setMinutes(0);
-                if (fechaProximoTurno.getDay() == 0) {
-                    fechaProximoTurnoMili = fechaAlt.getTime() + 86400000; //Salto el domingo
-                } else {
-                    fechaProximoTurnoMili = fechaAlt.getTime()
-                }
+                fechaProximoTurnoMili = fechaAlt.getTime() + 86400000; //Salto el domingo. DEJAR ASI!
+
                 agregarMinutos = false;
 
                 continue;
@@ -56,15 +53,9 @@ export class Especialista extends Usuario {
                 agregarMinutos = true;
             }
 
-            this.turnos.forEach((turno: Turno) => {
-                let fechaTurno = turno.fecha_turno;
-                let fechaTurnoEn30Minutos = new Date(turno.fecha_turno.getTime() + 30 * 60000); //30 minutos despues
-                fechaTurno.setSeconds(0);
-
-                if (!(fechaProximoTurno > fechaTurno && fechaProximoTurno <= fechaTurnoEn30Minutos)) {
-                    fechaEncontrada = true;
-                }
-            });
+            if (this.disponibleEnFecha(fechaProximoTurno)) {
+                fechaEncontrada = true;
+            }
 
         } while (fechaEncontrada == false && intento <= 180); //15 dias Maximo
 
@@ -72,17 +63,20 @@ export class Especialista extends Usuario {
     }
 
     disponibleEnFecha(fecha: Date): boolean {
+        if (!this.turnos.length) return false;
         var disponibleEnFecha = true;
         this.turnos.forEach((turno) => {
-            let fechaTurno = turno.fecha_turno;
-            fechaTurno.setSeconds(0);
-            let fechaTurnoEn30Minutos = new Date(turno.fecha_turno.getTime() + 30 * 60000); //30 minutos despues
+            if (turno.estado == EstadosTurnos.aprobado) {
+                let fechaTurno = turno.fecha_turno;
+                fechaTurno.setSeconds(0);
+                let fechaTurnoEn30Minutos = new Date(turno.fecha_turno.getTime() + 30 * 60000); //30 minutos despues
 
-            fecha.setMilliseconds(0);
-            fechaTurno.setMilliseconds(0);
-            fechaTurnoEn30Minutos.setMilliseconds(0);
-            if (fecha >= fechaTurno && fecha < fechaTurnoEn30Minutos) {
-                disponibleEnFecha = false;
+                fecha.setMilliseconds(0);
+                fechaTurno.setMilliseconds(0);
+                fechaTurnoEn30Minutos.setMilliseconds(0);
+                if (fecha >= fechaTurno && fecha < fechaTurnoEn30Minutos) {
+                    disponibleEnFecha = false;
+                }
             }
         })
         return disponibleEnFecha;

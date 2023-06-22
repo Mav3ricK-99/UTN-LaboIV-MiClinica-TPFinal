@@ -32,6 +32,11 @@ export class LoginComponent {
       this.router.navigate(['/']);
     }).catch((error) => {
       switch (error.code) {
+        case "auth/user-not-found": {
+          this.formularioIngreso.controls['contraseña'].setErrors({
+            'invalid': true
+          })
+        }; break;
         case "auth/wrong-password": {
           this.formularioIngreso.controls['contraseña'].setErrors({
             'invalid': true

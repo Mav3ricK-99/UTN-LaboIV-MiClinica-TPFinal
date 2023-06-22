@@ -14,6 +14,7 @@ import { ModalEncuestaTurnoComponent } from 'src/app/components/turnos/modal-enc
 import { ModalRechazarTurnoComponent } from 'src/app/components/turnos/modal-rechazar-turno/modal-rechazar-turno.component';
 import { ModalFinalizarTurnoComponent } from 'src/app/components/turnos/modal-finalizar-turno/modal-finalizar-turno.component';
 import { SolicitarTurnoComponent } from 'src/app/components/turnos/solicitar-turno/solicitar-turno.component';
+import { FiltrosTurnosComponent } from 'src/app/components/turnos/filtros-turnos/filtros-turnos.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { SolicitarTurnoComponent } from 'src/app/components/turnos/solicitar-tur
     ModalEncuestaTurnoComponent,
     ModalRechazarTurnoComponent,
     ModalFinalizarTurnoComponent,
-    SolicitarTurnoComponent
+    SolicitarTurnoComponent,
+    FiltrosTurnosComponent
   ],
   imports: [
     CommonModule,

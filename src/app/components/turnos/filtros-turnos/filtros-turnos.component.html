@@ -1,0 +1,56 @@
+<div class="d-flex flex-column col-md-12">
+    <h3>Filtros tabla</h3>
+    <form class="d-flex mb-3" [formGroup]="formularioFiltros">
+        <div class="form-group col-md-3 me-4">
+            <label for="especialidad" class="col-xs-3 col-sm-auto col-form-label">Buscar por especialidad:</label>
+            <input id="especialidad" type="text" class="form-control" formControlName="especialidad"
+                [ngbTypeahead]="buscarEspecialidad" (focus)="focus$.next($any($event).target.value)"
+                (click)="click$.next($any($event).target.value)" #selectEsp="ngbTypeahead" />
+            <div *ngIf="formularioFiltros.get('especialidad')?.invalid && (formularioFiltros.get('especialidad')?.dirty || formularioFiltros.get('especialidad')?.touched)"
+                class="alert alert-danger mt-3">
+                <div *ngIf="formularioFiltros.get('especialidad')?.errors?.['required']">
+                    La especilidad es requerida
+                </div>
+                <div *ngIf="formularioFiltros.get('especialidad')?.errors?.['minlength']">
+                    El campo especialidad debe contener como minimo 6 caracteres.
+                </div>
+                <div *ngIf="formularioFiltros.get('especialidad')?.errors?.['maxlength']">
+                    El campo especialidad debe contener como maximo 255 caracteres.
+                </div>
+            </div>
+        </div>
+
+        <ng-template #rt let-r="result" let-t="term">
+            <ngb-highlight [result]="r.nombre" [term]="t"></ngb-highlight>
+        </ng-template>
+
+        <div class="form-group col-md-3" *ngIf="filtrarPor == 'especialista';else filtroPaciente">
+            <label for="especialistas" class="col-xs-3 col-sm-auto col-form-label">Especialistas:</label>
+            <input id="especialistas" type="text" class="form-control" [resultTemplate]="rt"
+                [inputFormatter]="formatter" formControlName="especialista" [ngbTypeahead]="buscarEspecialista"
+                [editable]="false" />
+            <div *ngIf="formularioFiltros.get('especialista')?.invalid && (formularioFiltros.get('especialista')?.dirty || formularioFiltros.get('especialista')?.touched)"
+                class="alert alert-danger mt-3">
+                <div *ngIf="formularioFiltros.get('especialista')?.errors?.['required']">
+                    Un medico es requerido para el turno.
+                </div>
+            </div>
+        </div>
+
+        <ng-template #filtroPaciente>
+            <div class="form-group col-md-3">
+                <label for="pacientes" class="col-xs-3 col-sm-auto col-form-label">Pacientes:</label>
+                <input id="pacientes" type="text" class="form-control" [resultTemplate]="rt"
+                    [inputFormatter]="formatter" formControlName="paciente" [ngbTypeahead]="buscarPaciente"
+                    [editable]="false" />
+                <div *ngIf="formularioFiltros.get('paciente')?.invalid && (formularioFiltros.get('paciente')?.dirty || formularioFiltros.get('paciente')?.touched)"
+                    class="alert alert-danger mt-3">
+                    <div *ngIf="formularioFiltros.get('paciente')?.errors?.['required']">
+                        El paciente para este turno es requerido.</div>
+                </div>
+            </div>
+        </ng-template>
+    </form>
+    <small class="text-muted">*Escribe el nombre de la especialidad buscada o del paciente/especialista para filtrar la
+        tabla</small>
+</div>

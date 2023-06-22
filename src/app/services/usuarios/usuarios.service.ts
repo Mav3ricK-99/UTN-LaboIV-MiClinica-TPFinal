@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CollectionReference, DocumentData, Firestore, addDoc, collection, collectionData, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
+import { CollectionReference, DocumentData, Firestore, or, collection, collectionData, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where, and } from '@angular/fire/firestore';
 import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
@@ -7,7 +7,7 @@ import { Usuario } from 'src/app/classes/usuarios/usuario';
 import { map } from 'rxjs';
 import { Paciente } from 'src/app/classes/usuarios/paciente/paciente';
 import { Especialista } from 'src/app/classes/usuarios/especialista/especialista';
-import { beforeAuthStateChanged, getAdditionalUserInfo } from '@angular/fire/auth';
+import { beforeAuthStateChanged } from '@angular/fire/auth';
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 @Injectable()
@@ -86,6 +86,7 @@ export class UsuarioService {
     return setDoc(doc(this.usuariosCollection, id), {
       email: paciente.email,
       nombre: paciente.nombre,
+      edad: paciente.edad,
       dni: paciente.dni,
       obraSocial: paciente.obraSocial,
       nroAfiliado: paciente.nroAfiliado,
@@ -99,6 +100,7 @@ export class UsuarioService {
     return setDoc(doc(this.usuariosCollection, id), {
       email: especialista.email,
       nombre: especialista.nombre,
+      edad: especialista.edad,
       dni: especialista.dni,
       especialidad: especialista.especialidad,
       nroMatricula: especialista.nroMatricula,
@@ -112,6 +114,7 @@ export class UsuarioService {
     return setDoc(doc(this.usuariosCollection, id), {
       email: usuario.email,
       nombre: usuario.nombre,
+      edad: usuario.edad,
       dni: usuario.dni,
       tipoUsuario: usuario.tipoUsuario,
       cuentaHabilitada: true
@@ -207,12 +210,20 @@ export class UsuarioService {
   }
 
   buscarUsuario(nombreUsuario: string, tipoUsuario?: string) {
-
     let q;
     if (tipoUsuario) {
-      q = query(this.usuariosCollection, where("tipoUsuario", "==", tipoUsuario));
+      q = query(this.usuariosCollection, and(
+        /* where("tipoUsuario", "==", tipoUsuario) ,*/
+        or(
+          where("nombre", ">=", nombreUsuario),
+          where("nombre", "<=", nombreUsuario + '\uf8ff')
+        )
+      ));
     } else {
-      q = query(this.usuariosCollection, where("nombre", "==", nombreUsuario), where("tipoUsuario", "==", tipoUsuario));
+      q = query(this.usuariosCollection, or(
+        where("nombre", ">=", nombreUsuario),
+        where("nombre", "<=", nombreUsuario + '\uf8ff'))
+      );
     }
 
     return collectionData(q, { idField: 'uid' }).pipe(map(collection => {
@@ -227,4 +238,36 @@ export class UsuarioService {
       });
     }));
   }
+
+  buscarEspecialistaPorEspecialidad(especialidad: string, nombreUsuario?: string) {
+    let q;
+
+    if (nombreUsuario) {
+      q = query(this.usuariosCollection, and(
+        where("cuentaHabilitada", "==", true),
+        where("especialidad", "==", especialidad),
+        where("tipoUsuario", "==", 'especialista'),
+        or(
+          where("nombre", ">=", nombreUsuario),
+          where("nombre", "<=", nombreUsuario + "\uf8ff")
+        )
+      ));
+    } else {
+      q = query(this.usuariosCollection, and(
+        where("cuentaHabilitada", "==", true),
+        where("especialidad", "==", especialidad),
+        where("tipoUsuario", "==", 'especialista'),
+      ));
+    }
+
+    console.log(q);
+    return collectionData(q, { idField: 'uid' }).pipe(map(collection => {
+      return collection.map(b => {
+        let usuario: Usuario = this.armarEspecialista(b);
+        return usuario;
+      });
+    }));
+  }
+
+
 }

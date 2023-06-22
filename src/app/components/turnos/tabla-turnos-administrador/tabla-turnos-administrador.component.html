@@ -7,6 +7,7 @@
                 <th class="text-center" scope="col">Especialidad</th>
                 <th class="text-center" scope="col">Detalle</th>
                 <th class="text-center" scope="col">Fecha del turno</th>
+                <th class="text-center" scope="col">Estado</th>
                 <th></th>
             </tr>
         </thead>
@@ -18,6 +19,7 @@
                     <td>{{turno.especialidad}}</td>
                     <td>{{turno.detalle}}</td>
                     <td>{{turno.fecha_turno | date:'dd/M/Y H:mm'}}</td>
+                    <td>{{turno.estado}}</td>
                     <td>
                         <a *ngIf="turno.pendiente()" href="#" data-bs-toggle="dropdown"><i
                                 class="bi bi-three-dots-vertical mx-auto mb-1"></i></a>
@@ -31,14 +33,14 @@
             </ng-container>
             <ng-template #noHayTurnos>
                 <tr>
-                    <td colspan="6" align="center">No se encontraron turnos que mostrar.</td>
+                    <td colspan="7" align="center">No se encontraron turnos que mostrar.</td>
                 </tr>
             </ng-template>
         </tbody>
         <ng-template #loader>
             <tbody>
                 <tr>
-                    <td colspan="6" align="center">Cargando...</td>
+                    <td colspan="7" align="center">Cargando...</td>
                 </tr>
             </tbody>
         </ng-template>

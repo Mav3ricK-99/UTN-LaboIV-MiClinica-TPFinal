@@ -2,13 +2,15 @@ import { Component, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { TurnosService } from 'src/app/services/turnos/turnos.service';
 import { UsuarioService } from 'src/app/services/usuarios/usuarios.service';
-import { Observable, Subject, merge, of, OperatorFunction } from 'rxjs';
+import { Observable, Subject, merge, of, OperatorFunction, ObservableInput } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, catchError, tap, switchMap } from 'rxjs/operators';
 import { NgbCalendar, NgbDate, NgbDateStruct, NgbDatepickerI18n, NgbTimeStruct, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Especialidades, Especialista } from 'src/app/classes/usuarios/especialista/especialista';
 import { Usuario } from 'src/app/classes/usuarios/usuario';
 import { Turno } from 'src/app/classes/turno/turno';
 import { DatepickerService } from 'src/app/services/datepicker/datepicker.service';
+import { Paciente } from 'src/app/classes/usuarios/paciente/paciente';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-solicitar-turno',
@@ -18,14 +20,16 @@ import { DatepickerService } from 'src/app/services/datepicker/datepicker.servic
 })
 export class SolicitarTurnoComponent {
 
+  @ViewChild('botonCierreModal') botonCierreModal: any;
+
   formularioSolicitarTurno: FormGroup;
 
   @ViewChild('selectEsp', { static: true }) selectEsp: NgbTypeahead;
   focus$ = new Subject<string>();
   click$ = new Subject<string>();
 
-  searching = false;
-  searchFailed = false;
+  buscando = false;
+  busquedaFallida = false;
 
   mesesDatepicker = 2;
   showWeekNumbers = false;
@@ -39,25 +43,29 @@ export class SolicitarTurnoComponent {
   /* Está abierta al público de lunes a viernes en el horario de 8:00 a 19:00
   y los sábados en el horario de 8:00 a 14:00. La duración mínima de un turno es
   30 minutos. */
-  constructor(calendario: NgbCalendar, private usuariosService: UsuarioService, private turnosService: TurnosService, private formBuilder: FormBuilder) {
+  constructor(calendario: NgbCalendar, public usuariosService: UsuarioService, private turnosService: TurnosService, private formBuilder: FormBuilder) {
     this.fechaHoyNgb = calendario.getToday();
     this.fechaMaxNgb = calendario.getNext(this.fechaHoyNgb, 'd', 15);
 
     this.formularioSolicitarTurno = this.formBuilder.group({
-      especialidad: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]),
-      especialista: new FormControl('', [Validators.required]),
+      especialidad: new FormControl<Especialidades | null>(null, [Validators.required, Validators.minLength(6), Validators.maxLength(255)]),
+      especialista: new FormControl<Especialista | null>(null, [Validators.required]),
       fechaTurno: new FormControl<NgbDateStruct | null>(null, [Validators.required]),
       horarioTurno: new FormControl<NgbTimeStruct | null>(null, [Validators.required, this.validarHorarioTurno]),
+      detalle: new FormControl('', [Validators.maxLength(255)]),
     }, { validators: this.validarFechaTurno() });
     this.formularioSolicitarTurno.get('especialista')?.valueChanges.subscribe(especialista => this.cambioEspecialista(especialista))
 
     if (usuariosService.usuarioIngresado?.isAdmin()) {
-      this.formularioSolicitarTurno.addControl('paciente', new FormControl('', [Validators.required]))
+      this.formularioSolicitarTurno.addControl('paciente', new FormControl<Paciente | null>(null, [Validators.required]))
     }
   }
 
-  cambioEspecialista(especialista: any) {
+  cambioEspecialista(especialista: Especialista) {
     if (!especialista) return; //Si no es un especialista valido
+
+    let ctrlEspecialidad = this.formularioSolicitarTurno.get('especialidad');
+    ctrlEspecialidad?.setValue(especialista.especialidad);
 
     var ctrlCalendarioTurno = this.formularioSolicitarTurno.get('fechaTurno');
     var ctrlHorarioTurno = this.formularioSolicitarTurno.get('horarioTurno');
@@ -92,7 +100,7 @@ export class SolicitarTurnoComponent {
         ctrlCalendarioTurno?.setValue(fechaTurno);
         ctrlHorarioTurno?.setValue(horarioTurno);
       }
-    }, 1500);
+    }, 1000);
   }
 
   validarFechaTurno(): ValidatorFn {
@@ -109,7 +117,6 @@ export class SolicitarTurnoComponent {
           calendario.day, horario.hour,
           horario.minute, 0
         );
-
         if (!ctrlEspecialista.value?.disponibleEnFecha(fechaSolicitada)) {
           return {
             noDisponible: true,
@@ -148,28 +155,89 @@ export class SolicitarTurnoComponent {
     );
   };
   formatter = (x: Usuario) => x.nombre;
+
   buscarEspecialista: OperatorFunction<string, readonly Usuario[]> = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      tap(() => (this.searching = true)),
-      switchMap((term) =>
-        this.usuariosService.buscarUsuario(term, 'especialista').pipe(
-          tap(() => (this.searchFailed = false)),
+      tap(() => (this.buscando = true)),
+      switchMap((term) => {
+        let resultado: ObservableInput<any>;
+        let especialidad = this.formularioSolicitarTurno.get('especialidad')?.value;
+        if (especialidad) {
+          resultado = this.usuariosService.buscarEspecialistaPorEspecialidad(especialidad, term);
+        } else {
+          resultado = this.usuariosService.buscarUsuario(term, 'especialista');
+        }
+
+        return resultado.pipe(
+          tap(() => (this.busquedaFallida = false)),
           catchError(() => {
-            this.searchFailed = true;
+            this.busquedaFallida = true;
             return of([]);
-          }),
-        ),
+          }));
+      }
       ),
-      tap(() => (this.searching = false)),
+      tap(() => (this.buscando = false)),
     );
 
-  getDateFromNgbDate() {
-
-  }
+  buscarPaciente: OperatorFunction<string, readonly Usuario[]> = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => (this.buscando = true)),
+      switchMap((term) => this.usuariosService.buscarUsuario(term, 'paciente').pipe(
+        tap(() => (this.busquedaFallida = false)),
+        catchError(() => {
+          this.busquedaFallida = true;
+          return of([]);
+        }))
+      ),
+      tap(() => (this.buscando = false)),
+    );
 
   solicitarTurno() {
+    if (!this.formularioSolicitarTurno.valid) return;
 
+    let usuarioIngresado = this.usuariosService.usuarioIngresado;
+
+    let especialidad = this.formularioSolicitarTurno.get('especialidad')?.value;
+    let especialista = this.formularioSolicitarTurno.get('especialista')?.value;
+    let fechaTurno = this.formularioSolicitarTurno.get('fechaTurno')?.value;
+    let horarioTurno = this.formularioSolicitarTurno.get('horarioTurno')?.value;
+    let detalle = this.formularioSolicitarTurno.get('detalle')?.value;
+    let paciente: Paciente = <Paciente>usuarioIngresado;
+
+    if (usuarioIngresado?.isAdmin()) {
+      paciente = this.formularioSolicitarTurno.get('paciente')?.value;
+    }
+
+    let fechaSolicitada = new Date(
+      fechaTurno.year,
+      (fechaTurno.month - 1),
+      fechaTurno.day, horarioTurno.hour,
+      horarioTurno.minute, 0
+    );
+
+    let nuevoTurno = new Turno('0', especialidad, fechaSolicitada, detalle, especialista, paciente);
+
+    this.turnosService.nuevoTurno(nuevoTurno).then((res: any) => {
+      this.mostrarModal('Turno agregado con Exito', 'success', `Ahora solo falta que el especialista ${especialista.nombre} confirme la cita!.`);
+      this.botonCierreModal.nativeElement.click();
+    }).catch(error => {
+      this.mostrarModal('Hubo un problema al subir la cita', 'error', 'Por favor, vuelva a intearlo nuevamente en algunos minutos.');
+    });
+  }
+
+  mostrarModal(titulo: string, icon: string, textoCuerpo: string) {
+    if (icon != 'success' && icon != 'error') return;
+    Swal.fire({
+      title: titulo,
+      icon: icon,
+      text: textoCuerpo,
+      confirmButtonText: 'OK!',
+    }).then(() => {
+      this.formularioSolicitarTurno.reset();
+    })
   }
 }

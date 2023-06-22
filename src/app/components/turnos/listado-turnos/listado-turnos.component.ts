@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { UsuarioService } from 'src/app/services/usuarios/usuarios.service';
+import { FiltroTurnos } from '../filtros-turnos/filtros-turnos.component';
 
 @Component({
   selector: 'app-listado-turnos',
@@ -8,7 +9,11 @@ import { UsuarioService } from 'src/app/services/usuarios/usuarios.service';
 })
 export class ListadoTurnosComponent {
 
-  constructor(public usuariosService: UsuarioService) {
+  filtroTurnos: FiltroTurnos;
 
+  constructor(public usuariosService: UsuarioService) { }
+
+  filtrar($event: any) {
+    this.filtroTurnos = $event;
   }
 }

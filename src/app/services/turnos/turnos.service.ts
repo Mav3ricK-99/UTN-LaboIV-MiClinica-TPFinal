@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { CollectionReference, DocumentData, Firestore, addDoc, collection, collectionData, doc, query, updateDoc, where } from '@angular/fire/firestore';
+import { CollectionReference, DocumentData, Firestore, addDoc, and, collection, collectionData, doc, query, updateDoc, where } from '@angular/fire/firestore';
 import { Paciente } from 'src/app/classes/usuarios/paciente/paciente';
 import { UsuarioService } from '../usuarios/usuarios.service';
 import { map } from 'rxjs';
 import { CalificacionTurno, EncuestaTurno, EstadosTurnos, Turno } from 'src/app/classes/turno/turno';
 import { Usuario } from 'src/app/classes/usuarios/usuario';
 import { Especialista } from 'src/app/classes/usuarios/especialista/especialista';
+import { FiltroTurnos } from 'src/app/components/turnos/filtros-turnos/filtros-turnos.component';
 
 @Injectable({
   providedIn: 'root'
@@ -18,21 +19,51 @@ export class TurnosService {
     this.turnosCollection = collection(this.firestore, 'turnos');
   }
 
-  traerTodos() {
-    return collectionData(this.turnosCollection, { idField: 'uid' }).pipe(map(collection => {
+  nuevoTurno(turno: Turno) {
+    return addDoc(this.turnosCollection, {
+      especialidad: turno.especialidad,
+      especialista_uid: turno.especialista.uid,
+      paciente_uid: turno.paciente.uid,
+      fecha_turno: turno.fecha_turno,
+      detalle: turno.detalle,
+      estado: turno.estado
+    });
+  }
+
+  traerTodos(filtros?: FiltroTurnos) {
+    let q = query(this.turnosCollection);
+    if (filtros) {
+      q = query(this.turnosCollection, this.filtrar(filtros));
+    }
+
+    return collectionData(q, { idField: 'uid' }).pipe(map(collection => {
       return collection.map(b => this.armarTurno(b, true));
     }));;
   }
 
-  traerMisTurnos() {
-    const usuarioIngresado = this.usuariosService.usuarioIngresado;
+  traerMisTurnos(filtros?: FiltroTurnos) {
+    var usuarioIngresado = this.usuariosService.usuarioIngresado;
     let campo = usuarioIngresado instanceof Paciente ? 'paciente_uid' : 'especialista_uid';
 
-    const q = query(this.turnosCollection, where(campo, "==", usuarioIngresado?.uid));
-
+    let q = query(this.turnosCollection, where(campo, "==", usuarioIngresado?.uid));
+    if (filtros) {
+      q = query(this.turnosCollection, and(where(campo, "==", usuarioIngresado?.uid), this.filtrar(filtros)));
+    }
 
     return collectionData(q, { idField: 'uid' }).pipe(map(collection => {
-      return collection.map(b => this.armarTurno(b));
+      return collection.map(b => {
+        let turno: Turno = this.armarTurno(b)
+        if (usuarioIngresado instanceof Especialista) {
+          this.usuariosService.traerUsuario(b['paciente_uid']).then((doc) => {
+            if (doc.exists()) {
+              let paciente = this.usuariosService.armarPaciente(doc.data());
+              turno.paciente = paciente;
+            }
+          })
+        }
+
+        return turno;
+      });
     }));
   }
 
@@ -85,7 +116,7 @@ export class TurnosService {
 
   armarTurno(data: any, traerPaciente?: boolean): Turno {
     {
-      let turno = new Turno(data['uid'], data['especialidad'], data['fecha_turno']);
+      let turno = new Turno(data['uid'], data['especialidad'], data['fecha_turno'], data['detalle']);
       turno.estado = data['estado'];
 
       if (data['calificacion']) {
@@ -124,5 +155,31 @@ export class TurnosService {
 
       return turno;
     }
+  }
+
+  filtrar(filtros: FiltroTurnos) {
+    let qAnd: any = where('especialidad', '==', filtros.especialidad);
+
+    if (filtros.especialidad != undefined) { //gracias firebaseangularjsyasclñacn
+      if (filtros.paciente) { //Filtro por paciente
+        qAnd = and(
+          where('especialidad', '==', filtros.especialidad),
+          where('paciente_uid', '==', filtros.paciente.uid));
+      } else if (filtros.especialista) { //Filtro por especialista
+        qAnd = and(
+          where('especialidad', '==', filtros.especialidad),
+          where('especialista_uid', '==', filtros.especialista.uid));
+      } else {
+        qAnd = where('especialidad', '==', filtros.especialidad);
+      }
+    } else {
+      if (filtros.paciente) { //Filtro por paciente
+        qAnd = where('paciente_uid', '==', filtros.paciente.uid);
+      } else if (filtros.especialista) { //Filtro por especialista
+        qAnd = where('especialista_uid', '==', filtros.especialista.uid);
+      }
+    }
+
+    return qAnd;
   }
 }

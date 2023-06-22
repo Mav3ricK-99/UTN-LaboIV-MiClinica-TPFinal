@@ -4,18 +4,25 @@
             <div class="container-fluid py-5">
                 <container-element [ngSwitch]="usuariosService.usuarioIngresado?.tipoUsuario">
                     <ng-container *ngSwitchCase="'paciente'">
+                        <app-filtros-turnos filtrarPor="especialista" (filtro)="filtrar($event)" />
                         <h3 class="text-center p-2">Mis turnos</h3>
-                        <app-tabla-turnos-paciente />
+                        <app-tabla-turnos-paciente [filtros]="filtroTurnos"/>
                     </ng-container>
                     <ng-container *ngSwitchCase="'especialista'">
+                        <app-filtros-turnos filtrarPor="paciente" (filtro)="filtrar($event)" />
                         <h3 class="text-center p-2">Mis turnos asignados</h3>
-                        <app-tabla-turnos-especialista />
+                        <app-tabla-turnos-especialista [filtros]="filtroTurnos"/>
                     </ng-container>
-                    <app-tabla-turnos-administrador *ngSwitchCase="'admin'" />
+                    <ng-container *ngSwitchCase="'admin'">
+                        <app-filtros-turnos filtrarPor="especialista" (filtro)="filtrar($event)" />
+                        <h3 class="text-center p-2">Todos los turnos</h3>
+                        <app-tabla-turnos-administrador [filtros]="filtroTurnos"/>
+                    </ng-container>
+
 
                 </container-element>
             </div>
         </div>
     </article>
-    <app-solicitar-turno *ngIf="true" />
+    <app-solicitar-turno *ngIf="usuariosService.usuarioIngresado?.puedeCrearTurnos()" />
 </section>
