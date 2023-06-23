@@ -4,17 +4,22 @@ import { Especialista } from 'src/app/classes/usuarios/especialista/especialista
 import { Paciente } from 'src/app/classes/usuarios/paciente/paciente';
 import { UsuarioService } from 'src/app/services/usuarios/usuarios.service';
 import Swal from 'sweetalert2';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Usuario } from 'src/app/classes/usuarios/usuario';
+import { ReCaptchaV3Service, OnExecuteErrorData } from "ng-recaptcha";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-formulario-alta',
   templateUrl: './formulario-alta.component.html',
   styleUrls: ['./formulario-alta.component.sass']
 })
-export class FormularioAltaComponent {
+export class FormularioAltaComponent implements OnDestroy, OnInit{
 
-  @Input('mostrarFormulario') mostrarFormulario: string
+  private subscription: Subscription;
+  private reCaptchav3Token: string;
+
+  @Input('mostrarFormulario') mostrarFormulario: string;
 
   formularioRegistroPaciente: FormGroup;
   formularioRegistroEspecialista: FormGroup;
@@ -22,7 +27,7 @@ export class FormularioAltaComponent {
 
   mostrarNuevaEsp: boolean;
 
-  constructor(private formBuilder: FormBuilder, private usuarioService: UsuarioService, private router: Router) {
+  constructor(private recaptchaV3Service: ReCaptchaV3Service, private formBuilder: FormBuilder, private usuarioService: UsuarioService, private router: Router) {
 
     this.mostrarNuevaEsp = false;
     this.formularioRegistroPaciente = this.formBuilder.group({
@@ -61,8 +66,17 @@ export class FormularioAltaComponent {
     });
   }
 
+  public ngOnInit() {
+    this.subscription = this.recaptchaV3Service.onExecuteError.subscribe((data: OnExecuteErrorData) => {
+      console.error("bots not allowed" + data);
+    });
+  }
+
   registrarPaciente() {
-    if (!this.formularioRegistroPaciente.valid) return;
+    this.recaptchaV3Service.execute('registrarUsuario')
+      .subscribe((token) => {this.reCaptchav3Token = token;});
+
+    if (!this.formularioRegistroPaciente.valid || !this.reCaptchav3Token) return;
 
     let nombre = this.formularioRegistroPaciente.get('nombre')?.value;
     nombre += " " + this.formularioRegistroPaciente.get('apellido')?.value;
@@ -90,7 +104,10 @@ export class FormularioAltaComponent {
   }
 
   registrarEspecialista() {
-    if (!this.formularioRegistroEspecialista.valid) return;
+    this.recaptchaV3Service.execute('registrarUsuario')
+      .subscribe((token) => {this.reCaptchav3Token = token;});
+
+    if (!this.formularioRegistroEspecialista.valid || !this.reCaptchav3Token) return;
 
     let nombre = this.formularioRegistroEspecialista.get('nombre')?.value;
     nombre += " " + this.formularioRegistroEspecialista.get('apellido')?.value;
@@ -119,7 +136,10 @@ export class FormularioAltaComponent {
   }
 
   registrarAdministrador() {
-    if (!this.formularioRegistroAdministrador.valid) return;
+    this.recaptchaV3Service.execute('registrarUsuario')
+      .subscribe((token) => {this.reCaptchav3Token = token;});
+
+    if (!this.formularioRegistroAdministrador.valid || !this.reCaptchav3Token) return;
 
     let nombre = this.formularioRegistroAdministrador.get('nombre')?.value;
     nombre += " " + this.formularioRegistroAdministrador.get('apellido')?.value;
@@ -150,6 +170,12 @@ export class FormularioAltaComponent {
     this.formularioRegistroEspecialista.reset();
     this.formularioRegistroPaciente.reset();
     this.formularioRegistroAdministrador.reset();
+  }
+
+  public ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   mostrarModal(titulo: string, icon: string, textoCuerpo: string) {
