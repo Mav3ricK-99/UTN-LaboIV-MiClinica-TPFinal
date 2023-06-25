@@ -1,0 +1,24 @@
+<div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+    <div class="contenedor-usuarios mb-2">
+        <ng-container *ngFor="let usuario of (usuarios$ | async)">
+            <div (click)="ingresarCon(usuario)" class="card mb-1" style="max-width: 420px;">
+                <div class="row g-0">
+                    <div class="col-md-2">
+                        <img [src]="usuario.pathImagen" width="75px" class="img-fluid rounded-start">
+                    </div>
+                    <div class="col-md-10">
+                        <div class="card-body">
+                            <h5 class="card-title">{{usuario.nombre}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
+<p>
+    <button type="button" class="btn btn-outline-primary fw-bold btn-acceso-rapido" (click)="collapse.toggle()"
+        [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
+        <i class="bi bi-person-circle mx-2 mb-1"></i>
+    </button>
+</p>

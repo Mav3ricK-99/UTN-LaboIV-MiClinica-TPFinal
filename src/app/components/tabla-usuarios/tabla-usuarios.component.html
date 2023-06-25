@@ -8,22 +8,23 @@
                 <th scope="col">Correo electronico</th>
                 <th scope="col">Especialidad / Obra social</th>
                 <th scope="col">N° Matricula profesional / N° Afiliado</th>
-                <th scope="col">Habilitar acceso especialista</th>
-                <th scope="col">Tipo de usuario</th>
+                <th *ngIf="!soloTipoUsuario || soloTipoUsuario == 'especialista'" scope="col">Habilitar acceso
+                    especialista</th>
+                <th *ngIf="!soloTipoUsuario" scope="col">Tipo de usuario</th>
             </tr>
         </thead>
         <tbody *ngIf="(usuarios$ | async) as usuarios; else loader">
             <ng-container *ngIf="usuarios.length > 0; else noHayUsuarios">
                 <ng-container *ngFor="let usuario of usuarios" [ngSwitch]="usuario.tipoUsuario">
-                    <tr *ngSwitchCase="'paciente'">
+                    <tr *ngSwitchCase="'paciente'" (dblclick)="seleccionarUsuario(usuario)">
                         <td>{{usuario.nombre}}</td>
                         <td>{{usuario.dni}}</td>
                         <td>{{usuario.edad}}</td>
                         <td>{{usuario.email}}</td>
                         <td>{{(usuario | castToPaciente).obraSocial}}</td>
                         <td>{{(usuario | castToPaciente).nroAfiliado}}</td>
-                        <td>-</td>
-                        <td>{{usuario.tipoUsuario}}</td>
+                        <td *ngIf="!soloTipoUsuario || soloTipoUsuario == 'especialista'">-</td>
+                        <td *ngIf="!soloTipoUsuario">{{usuario.tipoUsuario}}</td>
                     </tr>
                     <tr *ngSwitchCase="'especialista'">
                         <td>{{usuario.nombre}}</td>
@@ -32,9 +33,10 @@
                         <td>{{usuario.email}}</td>
                         <td>{{(usuario | castToEspecialista).especialidad}}</td>
                         <td>{{(usuario | castToEspecialista).nroMatricula}}</td>
-                        <td><input class="form-check-input" type="checkbox" [checked]="usuario.cuentaHabilitada"
+                        <td *ngIf="!soloTipoUsuario || soloTipoUsuario == 'especialista'"><input class="form-check-input"
+                                type="checkbox" [checked]="usuario.cuentaHabilitada"
                                 (change)="habilitarCuenta(usuario)"></td>
-                        <td>{{usuario.tipoUsuario}}</td>
+                        <td *ngIf="!soloTipoUsuario">{{usuario.tipoUsuario}}</td>
                     </tr>
                     <tr *ngSwitchCase="'admin'">
                         <td>{{usuario.nombre}}</td>
@@ -43,8 +45,8 @@
                         <td>{{usuario.email}}</td>
                         <td>N/A</td>
                         <td>N/A</td>
-                        <td>-</td>
-                        <td>{{usuario.tipoUsuario}}</td>
+                        <td *ngIf="!soloTipoUsuario || soloTipoUsuario == 'especialista'">-</td>
+                        <td *ngIf="!soloTipoUsuario">{{usuario.tipoUsuario}}</td>
                     </tr>
                 </ng-container>
             </ng-container>

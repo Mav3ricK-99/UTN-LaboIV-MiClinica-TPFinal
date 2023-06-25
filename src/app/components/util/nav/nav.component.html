@@ -15,25 +15,6 @@
                                 Inicio
                             </a>
                         </li>
-                        <!-- <li class="fs-5">
-                        <a href="#" class="d-flex flex-column nav-link text-white">
-                            <i class="bi bi-speedometer2 mx-auto mb-1"></i>
-                            Estadisticas
-                        </a>
-                    </li> -->
-
-                        <li class="fs-5">
-                            <a href="#" class="d-flex flex-column fw-bold nav-link text-white" routerLink="/turnos">
-                                <i class="bi bi-table mx-auto mb-1"></i>
-                                Turnos
-                            </a>
-                        </li>
-                        <!-- <li class="fs-5">
-                        <a href="#" class="d-flex flex-column nav-link text-white">
-                            <i class="bi bi-grid-3x3 mx-auto mb-1"></i>
-                            Products
-                        </a>
-                    </li> -->
                     </ul>
                 </ng-container>
                 <ng-template #navIngresado>
@@ -61,18 +42,18 @@
                             Estadisticas
                         </a>
                     </li> -->
+                        <li *ngIf="usuariosService.usuarioIngresado?.tipoUsuario == 'especialista'" class="fs-5">
+                            <a href="#" class="d-flex flex-column fw-bold nav-link text-white" routerLink="/pacientes">
+                                <i class="bi bi-people mx-auto mb-1"></i>
+                                Pacientes
+                            </a>
+                        </li>
                         <li class="fs-5">
                             <a href="#" class="d-flex flex-column fw-bold nav-link text-white" routerLink="/turnos">
                                 <i class="bi bi-table mx-auto mb-1"></i>
                                 Turnos
                             </a>
                         </li>
-                        <!-- <li class="fs-5">
-                        <a href="#" class="d-flex flex-column nav-link text-white">
-                            <i class="bi bi-grid-3x3 mx-auto mb-1"></i>
-                            Products
-                        </a>
-                    </li> -->
                         <li class="fs-5">
                             <a href="#" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"
                                 class="d-flex flex-column fw-bold nav-link text-white">
@@ -82,10 +63,12 @@
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 <li><a class="dropdown-item" href="#">{{usuariosService.usuarioIngresado?.nombre}}</a>
                                 </li>
+                                <li><a class="dropdown-item" routerLink="/perfil">Mi perfil</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="#" (click)="usuariosService.cerrarSesionUsuario()">Cerrar sesion</a></li>
+                                <li><a class="dropdown-item" href="#"
+                                        (click)="usuariosService.cerrarSesionUsuario()">Cerrar sesion</a></li>
                             </ul>
                         </li>
 

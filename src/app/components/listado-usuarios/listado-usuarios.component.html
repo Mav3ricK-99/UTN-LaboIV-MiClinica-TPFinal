@@ -1,11 +1,18 @@
 <section class="container-fluid">
     <article>
-        <div class="p-2 mb-2 bg-light-dark rounded-3">
-            <div class="container-fluid py-5">
-                <app-tabla-usuarios [usuarios$]="usuarios$" />
+        <div class="p-2 mb-1 bg-light-dark rounded-3">
+            <div class="container-fluid py-2">
+                <app-tabla-usuarios [usuarios$]="usuarios$" (eligioUsuario)="mostrarHistorialUsuario($event)" />
             </div>
         </div>
     </article>
+
+    <article class="d-flex align-items-center flex-column text-center scrollable mb-2">
+        <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+            <app-historial *ngIf="usuarioSeleccionado" [usuario]="usuarioSeleccionado" [mostrarImagenPerfil]="true" />
+        </div>
+    </article>
+
     <article class="d-flex align-items-center flex-column">
         <div class="col-lg-12 justify-content-around d-flex pt-2">
             <button type="button" class="btnAlta btnAltaPac" (click)="cambiarFormulario('pacientes')">

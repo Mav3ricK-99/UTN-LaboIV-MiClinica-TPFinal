@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CollectionReference, DocumentData, Firestore, addDoc, and, collection, collectionData, doc, query, updateDoc, where } from '@angular/fire/firestore';
+import { CollectionReference, DocumentData, Firestore, addDoc, and, collection, collectionData, doc, getDoc, query, updateDoc, where } from '@angular/fire/firestore';
 import { Paciente } from 'src/app/classes/usuarios/paciente/paciente';
 import { UsuarioService } from '../usuarios/usuarios.service';
 import { map } from 'rxjs';
@@ -30,6 +30,12 @@ export class TurnosService {
     });
   }
 
+  traerTurno(uid: string) {
+    return getDoc(doc(this.firestore, `turnos/${uid}`)).then((b) => {
+      return this.armarTurno(b.data(), true);
+    });
+  }
+
   traerTodos(filtros?: FiltroTurnos) {
     let q = query(this.turnosCollection);
     if (filtros) {
@@ -57,6 +63,7 @@ export class TurnosService {
           this.usuariosService.traerUsuario(b['paciente_uid']).then((doc) => {
             if (doc.exists()) {
               let paciente = this.usuariosService.armarPaciente(doc.data());
+              paciente.uid = doc.id;
               turno.paciente = paciente;
             }
           })
@@ -64,6 +71,21 @@ export class TurnosService {
 
         return turno;
       });
+    }));
+  }
+
+  traerIdsMisPacientes() {
+    var usuarioIngresado = this.usuariosService.usuarioIngresado;
+
+    let q = query(this.turnosCollection, where('especialista_uid', '==', usuarioIngresado?.uid));
+    return collectionData(q, { idField: 'uid' }).pipe(map(collection => {
+      return collection.map(b => {
+        return b['paciente_uid'];
+      }).reduce(function (acc, curr) {
+        if (!acc.includes(curr))
+          acc.push(curr);
+        return acc;
+      }, []);
     }));
   }
 
@@ -140,6 +162,7 @@ export class TurnosService {
           let paciente;
           if (d.exists()) {
             paciente = this.usuariosService.armarPaciente(d.data());
+            paciente.uid = d.id;
             turno.paciente = paciente;
           }
         })
@@ -149,6 +172,7 @@ export class TurnosService {
         let especialista;
         if (d.exists()) {
           especialista = this.usuariosService.armarEspecialista(d.data());
+          especialista.uid = d.id;
           turno.especialista = especialista;
         }
       })

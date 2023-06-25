@@ -1,0 +1,64 @@
+<div class="col-md-12">
+    <div *ngIf="(historiales$ | async) as historiales; else loader">
+        <ng-container *ngIf="historiales.length > 0; else noHayHistoriales">
+            <div class="card mb-3" *ngFor="let historial of historiales; let i = index">
+                <div class="row g-0" *ngIf="historial.turno">
+                    <div *ngIf="mostrarImagenPerfil" class="align-self-center" [class.col-md-3]="!mostrarImagenPerfil"
+                        [class.col-md-4]="mostrarImagenPerfil">
+                        <img [src]="historial.turno.paciente.pathImagen" class="img-fluid rounded-start">
+                    </div>
+                    <div [class.col-md-9]="!mostrarImagenPerfil" [class.col-md-8]="mostrarImagenPerfil">
+                        <div class="card-body">
+                            <h5 class="card-title">Turno #{{i+1}} <span *ngIf="historial.turno.detalle != 'N/A'">-
+                                    {{historial.turno.detalle}}</span></h5>
+                            <h6 class="card-title">Revision hecha por {{historial.turno.especialista.nombre}} -
+                                {{historial.turno.especialidad}}</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="card-title h7">Diagnosticos</h6>
+                                    <p class="card-text">{{historial.turno.mensaje}}</p>
+                                    <h6 class="card-title h7">Otros detalles al momento de la visita</h6>
+                                    <p class="card-text">
+                                        Altura: {{historial.altura}} centimetros<br>
+                                        Peso: {{historial.peso}}Kg<br>
+                                        Temperatura: {{historial.temperatura}}°C<br>
+                                        Presion: {{historial.presion}}<br>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="card-title">Datos extra</h6>
+                                    <p class="card-text">
+                                        <ng-container *ngFor="let datoExtra of historial.datosExtra">
+                                            {{datoExtra | mapToText}}<br>
+                                        </ng-container>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="card-text"><small class="text-muted">Visitado en
+                                            {{historial.turno.fecha_turno |
+                                            date:'short'}}</small></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="card-text"><small class="text-muted">Estado del turno:
+                                            {{historial.turno.estado}}</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #noHayHistoriales>
+            <strong>No se encontraron historiales para {{usuario.nombre}}</strong>
+        </ng-template>
+    </div>
+
+    <ng-template #loader>
+        <div class="d-flex align-items-center">
+            <strong class="me-3">Cargando</strong>
+            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+        </div>
+    </ng-template>
+</div>

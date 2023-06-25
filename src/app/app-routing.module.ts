@@ -4,6 +4,7 @@ import { HomeComponent } from './components/home/home/home.component';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { isAdminGuard } from './guard/permisos/is-admin.guard';
+import { PerfilComponent } from './components/usuarios/perfil/perfil.component';
 
 const routes: Routes = [
   {
@@ -17,9 +18,17 @@ const routes: Routes = [
     title: 'MiClinica - Registro usuarios'
   },
   {
+    path: 'perfil',
+    component: PerfilComponent,
+  },
+  {
     path: 'usuarios',
     loadChildren: () => import('./modules/usuarios/usuarios.module').then(m => m.UsuariosModule),
     canActivate: [isAdminGuard]
+  },
+  {
+    path: 'pacientes',
+    loadChildren: () => import('./modules/pacientes/pacientes.module').then(m => m.PacientesModule),
   },
   {
     path: 'turnos',

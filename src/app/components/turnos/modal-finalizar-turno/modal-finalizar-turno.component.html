@@ -10,7 +10,7 @@
             </div>
             <form [formGroup]="formularioFinalizarTurno" (ngSubmit)="finalizarTurno()">
                 <div class="modal-body">
-                    <div class="form-row d-flex justify-content-around mb-4">
+                    <div class="d-flex flex-column justify-content-around mb-4">
                         <div class="form-group col-md-12">
                             <label for="descripcionRechazar">Escriba el diagnostico realizado.</label>
                             <textarea class="form-control" id="descripcionRechazar"
@@ -29,6 +29,129 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group col-md-12">
+                            <label for="altura" class="form-label">Altura en centimetros</label>
+                            <div class="input-group mb-3">
+                                <input id="altura" type="number" formControlName="altura" class="form-control"
+                                    placeholder="Altura">
+                                <span class="input-group-text">Cm</span>
+                            </div>
+                            <div *ngIf="formularioFinalizarTurno.get('altura')?.invalid && (formularioFinalizarTurno.get('altura')?.dirty || formularioFinalizarTurno.get('altura')?.touched)"
+                                class="alert alert-danger mt-3">
+                                <div *ngIf="formularioFinalizarTurno.get('altura')?.errors?.['required']">
+                                    El campo altura del diagnostico es requerido.
+                                </div>
+                                <div *ngIf="formularioFinalizarTurno.get('altura')?.errors?.['min']">
+                                    El campo altura debe ser como minimo 100 centimetros.
+                                </div>
+                                <div *ngIf="formularioFinalizarTurno.get('altura')?.errors?.['max']">
+                                    El campo altura debe ser como maximo 250 centimetros.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label for="peso" class="form-label">Peso corporal</label>
+                            <div class="input-group mb-3">
+                                <input id="peso" type="number" formControlName="peso" class="form-control"
+                                    placeholder="Peso">
+                                <span class="input-group-text">Kg</span>
+                            </div>
+                            <div *ngIf="formularioFinalizarTurno.get('peso')?.invalid && (formularioFinalizarTurno.get('peso')?.dirty || formularioFinalizarTurno.get('peso')?.touched)"
+                                class="alert alert-danger mt-3">
+                                <div *ngIf="formularioFinalizarTurno.get('peso')?.errors?.['required']">
+                                    El campo peso del historial es requerido.
+                                </div>
+                                <div *ngIf="formularioFinalizarTurno.get('peso')?.errors?.['max']">
+                                    El campo peso debe ser como maximo de 200 kilogramos.
+                                </div>
+                                <div *ngIf="formularioFinalizarTurno.get('peso')?.errors?.['min']">
+                                    El campo peso debe ser como minimo de 20 kilogramos.
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label for="temperatura" class="form-label">Temperatura</label>
+                            <div class="input-group mb-3">
+                                <input id="temperatura" type="number" formControlName="temperatura" class="form-control"
+                                    placeholder="Temperatura">
+                                <span class="input-group-text">C°</span>
+                            </div>
+                            <div *ngIf="formularioFinalizarTurno.get('temperatura')?.invalid && (formularioFinalizarTurno.get('temperatura')?.dirty || formularioFinalizarTurno.get('temperatura')?.touched)"
+                                class="alert alert-danger mt-3">
+                                <div *ngIf="formularioFinalizarTurno.get('temperatura')?.errors?.['required']">
+                                    El campo temperatura del diagnostico es requerido.
+                                </div>
+                                <div *ngIf="formularioFinalizarTurno.get('temperatura')?.errors?.['max']">
+                                    El campo temperatura debe ser como maximo 50°C.
+                                </div>
+                                <div *ngIf="formularioFinalizarTurno.get('temperatura')?.errors?.['min']">
+                                    El campo temperatura debe ser como minimo 30°C.
+                                </div>
+                            </div>
+                        </div>
+
+                        <label for="presion" class="form-label">Presion arterial</label>
+                        <div class="input-group mb-3">
+                            <input id="presion" type="number" formControlName="presionMinima" class="form-control"
+                                placeholder="Presion minima" aria-label="presionMinima">
+                            <span class="input-group-text">/</span>
+                            <input type="number" class="form-control" formControlName="presionMaxima"
+                                placeholder="máxima" aria-label="presionMaxima">
+                            <span class="input-group-text">mm Hg</span>
+                            <div *ngIf="formularioFinalizarTurno.get('presionMinima')?.invalid && (formularioFinalizarTurno.get('presionMinima')?.dirty || formularioFinalizarTurno.get('presionMinima')?.touched)"
+                                class="alert alert-danger mt-2">
+                                <div *ngIf="formularioFinalizarTurno.get('presionMinima')?.errors?.['required']">
+                                    El campo presion minima del diagnostico es requerido.
+                                </div>
+                                <div *ngIf="formularioFinalizarTurno.get('presionMinima')?.errors?.['max']">
+                                    El campo presion minima debe ser como maximo 10.
+                                </div>
+                                <div *ngIf="formularioFinalizarTurno.get('presionMinima')?.errors?.['min']">
+                                    El campo presion minima debe ser como minimo 6.
+                                </div>
+                            </div>
+                            <div *ngIf="formularioFinalizarTurno.get('presionMaxima')?.invalid && (formularioFinalizarTurno.get('presionMaxima')?.dirty || formularioFinalizarTurno.get('presionMaxima')?.touched)"
+                                class="alert alert-danger mt-2">
+                                <div *ngIf="formularioFinalizarTurno.get('presionMaxima')?.errors?.['required']">
+                                    El campo presion maxima del diagnostico es requerido.
+                                </div>
+                                <div *ngIf="formularioFinalizarTurno.get('presionMaxima')?.errors?.['max']">
+                                    El campo presion maxima debe ser como maximo 25.
+                                </div>
+                                <div *ngIf="formularioFinalizarTurno.get('presionMaxima')?.errors?.['min']">
+                                    El campo presion maxima debe ser como minimo 11.
+                                </div>
+                            </div>
+                        </div>
+
+                        <label for="datosExtra" class="form-label">Datos extra (opcionales)</label>
+                        <ng-container formArrayName="datosExtra"
+                            *ngFor="let controles of formularioFinalizarTurno.get('datosExtra')?.value; let i = index">
+                            <div [formGroupName]="i">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Clave</span>
+                                    <input id="clave" type="text" formControlName="clave" class="form-control"
+                                        placeholder="Clave" aria-label="clave">
+                                    <span class="input-group-text">Valor</span>
+                                    <input type="text" class="form-control" formControlName="valor" placeholder="Valor"
+                                        aria-label="valor">
+                                </div>
+                            </div>
+                        </ng-container>
+                        <div *ngIf="formularioFinalizarTurno.errors?.['excedido'] && (formularioFinalizarTurno.touched || formularioFinalizarTurno.dirty)"
+                            class="alert alert-danger mt-2">
+                            La cantidad de datos opcionales deben ser como maximo 5.
+                        </div>
+                        <div *ngIf="formularioFinalizarTurno.errors?.['incompleto'] && (formularioFinalizarTurno.touched || formularioFinalizarTurno.dirty)"
+                            class="alert alert-danger mt-2">
+                            Uno de los datos opcionales esta faltando.
+                        </div>
+                        <button type="button" class="btn btn-success"
+                            [disabled]="formularioFinalizarTurno.get('datosExtra')?.value.length > 4"
+                            (click)="agregarDatosExtra()">+</button>
                     </div>
                 </div>
                 <div class="modal-footer">

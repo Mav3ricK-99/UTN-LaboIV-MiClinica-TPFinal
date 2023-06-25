@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CollectionReference, DocumentData, Firestore, or, collection, collectionData, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where, and } from '@angular/fire/firestore';
+import { CollectionReference, DocumentData, Firestore, or, collection, collectionData, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where, and, QueryFilterConstraint } from '@angular/fire/firestore';
 import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
@@ -68,12 +68,38 @@ export class UsuarioService {
   }
 
   traerTodos() {
-    return collectionData(this.usuariosCollection, { idField: 'uid' });
+    return collectionData(this.usuariosCollection, { idField: 'uid' }).pipe(map(collection => {
+      return collection.map(b => {
+        let usuario: Usuario;
+        switch (b['tipoUsuario']) {
+          case 'paciente': usuario = this.armarPaciente(b); break;
+          case 'especialista': usuario = this.armarEspecialista(b); break;
+          default: usuario = this.armarUsuario(b); break;
+        }
+        return usuario;
+      });
+    }));
   }
   //console.log(this.afAuth.user.subscribe((e) => console.log(e))) Otra forma de obtener el logeado
   async traerUsuario(id: string) {
     const documento = doc(this.firestore, `usuarios/${id}`);
     return await getDoc(documento);
+  }
+
+  traerUsuarios(ids: string[]) {
+    let q = query(this.usuariosCollection, where('uid', 'in', ids));
+
+    return collectionData(q, { idField: 'uid' }).pipe(map(collection => {
+      return collection.map(b => {
+        let usuario: Usuario;
+        switch (b['tipoUsuario']) {
+          case 'paciente': usuario = this.armarPaciente(b); break;
+          case 'especialista': usuario = this.armarEspecialista(b); break;
+          default: usuario = this.armarUsuario(b); break;
+        }
+        return usuario;
+      });
+    }));
   }
 
   habilitarCuenta(uid: string, habilitar: boolean) {
@@ -84,6 +110,7 @@ export class UsuarioService {
 
   crearPaciente(paciente: Paciente, id: string) {
     return setDoc(doc(this.usuariosCollection, id), {
+      uid: id,
       email: paciente.email,
       nombre: paciente.nombre,
       edad: paciente.edad,
@@ -98,6 +125,7 @@ export class UsuarioService {
   crearEspecialista(especialista: Especialista, id: string) {
 
     return setDoc(doc(this.usuariosCollection, id), {
+      uid: id,
       email: especialista.email,
       nombre: especialista.nombre,
       edad: especialista.edad,
@@ -112,6 +140,7 @@ export class UsuarioService {
   crearUsuario(usuario: Usuario, id: string) {
 
     return setDoc(doc(this.usuariosCollection, id), {
+      uid: id,
       email: usuario.email,
       nombre: usuario.nombre,
       edad: usuario.edad,
@@ -191,7 +220,6 @@ export class UsuarioService {
   }
 
   actualizarPathImagenPerfil(uid: string, fullPath: string) {
-    console.log(fullPath);
     const documento = doc(this.firestore, `usuarios`, uid);
     return updateDoc(documento, {
       pathImagen: fullPath
@@ -260,7 +288,6 @@ export class UsuarioService {
       ));
     }
 
-    console.log(q);
     return collectionData(q, { idField: 'uid' }).pipe(map(collection => {
       return collection.map(b => {
         let usuario: Usuario = this.armarEspecialista(b);

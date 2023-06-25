@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { Especialista } from 'src/app/classes/usuarios/especialista/especialista';
 import { Paciente } from 'src/app/classes/usuarios/paciente/paciente';
@@ -14,10 +14,15 @@ export class TablaUsuariosComponent {
 
   @Input() usuarios$: Observable<Usuario[]>;
 
-  constructor(private usuariosService: UsuarioService) {
+  @Input() soloTipoUsuario: string;
 
+  @Output() eligioUsuario = new EventEmitter<Usuario>();
+
+  constructor(private usuariosService: UsuarioService) { }
+
+  seleccionarUsuario($event: any) {
+    this.eligioUsuario.emit($event);
   }
-
 
   habilitarCuenta(usuario: Usuario) {
     this.usuariosService.habilitarCuenta(usuario.uid, !usuario.cuentaHabilitada);

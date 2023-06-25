@@ -1,0 +1,68 @@
+<section style="background-color: #eee;">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <img [src]="usuario.pathImagen" alt="avatar" class="rounded-circle img-fluid"
+                            style="width: 150px;">
+                        <h5 class="my-3">{{usuario.nombre}}</h5>
+                        <p class="text-muted mb-1">DNI {{usuario.dni}}</p>
+                        <p class="text-muted mb-4">{{usuario.edad}} años</p>
+                        <div class="d-flex justify-content-center mb-2">
+                            <button type="button" class="btn btn-danger">Deshabilitar cuenta</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <h3>Datos</h3>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Nombre completo</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">{{usuario.nombre}}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Correo electronico</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">{{usuario.email}}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <ng-container *ngIf="usuario.tipoUsuario == 'paciente'">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Obra social/Prepaga</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0">{{(usuario | castToPaciente).obraSocial}}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Número de afiliado</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0">{{(usuario | castToPaciente).nroAfiliado}}</p>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="row">
+                    <h3>Historial clinico</h3>
+                    <app-historial [usuario]="usuario" [mostrarImagenPerfil]="false"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

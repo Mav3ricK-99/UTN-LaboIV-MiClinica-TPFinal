@@ -1,15 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { Usuario } from 'src/app/classes/usuarios/usuario';
+import { TurnosService } from 'src/app/services/turnos/turnos.service';
 import { UsuarioService } from 'src/app/services/usuarios/usuarios.service';
 
 @Component({
-  selector: 'app-listado-usuarios',
-  templateUrl: './listado-usuarios.component.html',
-  styleUrls: ['./listado-usuarios.component.sass']
+  selector: 'app-listado-pacientes',
+  templateUrl: './listado-pacientes.component.html',
+  styleUrls: ['./listado-pacientes.component.sass']
 })
-export class ListadoUsuariosComponent {
+export class ListadoPacientesComponent {
 
   mostrarFormulario: string;
   usuarios$: Observable<any[]>;
@@ -20,14 +21,10 @@ export class ListadoUsuariosComponent {
 
   public usuarioSeleccionado: Usuario;
 
-  constructor(private usuariosService: UsuarioService) {
-    this.usuarios$ = this.usuariosService.traerTodos();
-
-    this.mostrarFormulario = 'pacientes';
-  }
-
-  cambiarFormulario(formulario: string) {
-    this.mostrarFormulario = formulario;
+  constructor(private turnosService: TurnosService, private usuarioService: UsuarioService) {
+    this.turnosService.traerIdsMisPacientes().forEach((ids) => {
+      this.usuarios$ = this.usuarioService.traerUsuarios(ids)
+    });
   }
 
   mostrarHistorialUsuario($event: any) {

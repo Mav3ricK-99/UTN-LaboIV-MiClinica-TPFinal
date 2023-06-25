@@ -16,7 +16,9 @@ import { HomeComponent } from './components/home/home/home.component';
 import { UsuarioService } from './services/usuarios/usuarios.service';
 import { UsuariosSharedModule } from './modules/shared/usuarios-shared/usuarios-shared.module';
 import { FormSharedModule } from './modules/shared/form-shared/form-shared.module';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapseModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { PerfilComponent } from './components/usuarios/perfil/perfil.component';
+import { AccesoRapidoComponent } from './components/acceso-rapido/acceso-rapido.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     FooterComponent,
     RegisterComponent,
     HomeComponent,
+    PerfilComponent,
+    AccesoRapidoComponent,
   ],
   imports: [
     BrowserModule,
@@ -37,6 +41,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     UsuariosSharedModule,
     FormSharedModule,
     NgbModule,
+    NgbCollapseModule,
     NoopAnimationsModule
   ],
   providers: [UsuarioService, { provide: FIREBASE_OPTIONS, useValue: environment.firebase }],
