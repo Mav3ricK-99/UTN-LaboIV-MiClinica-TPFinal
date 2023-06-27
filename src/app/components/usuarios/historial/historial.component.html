@@ -1,34 +1,34 @@
 <div class="col-md-12">
-    <div *ngIf="(historiales$ | async) as historiales; else loader">
-        <ng-container *ngIf="historiales.length > 0; else noHayHistoriales">
-            <div class="card mb-3" *ngFor="let historial of historiales; let i = index">
-                <div class="row g-0" *ngIf="historial.turno">
+    <div *ngIf="(turnos$ | async) as turnos; else loader">
+        <ng-container *ngIf="turnos.length > 0; else noHayHistoriales">
+            <div class="card mb-3" id="historiales" *ngFor="let turno of turnos; let i = index">
+                <div class="row g-0" *ngIf="turno.historial">
                     <div *ngIf="mostrarImagenPerfil" class="align-self-center" [class.col-md-3]="!mostrarImagenPerfil"
                         [class.col-md-4]="mostrarImagenPerfil">
-                        <img [src]="historial.turno.paciente.pathImagen" class="img-fluid rounded-start">
+                        <img [src]="turno.paciente.pathImagen" class="img-fluid rounded-start">
                     </div>
                     <div [class.col-md-9]="!mostrarImagenPerfil" [class.col-md-8]="mostrarImagenPerfil">
                         <div class="card-body">
-                            <h5 class="card-title">Turno #{{i+1}} <span *ngIf="historial.turno.detalle != 'N/A'">-
-                                    {{historial.turno.detalle}}</span></h5>
-                            <h6 class="card-title">Revision hecha por {{historial.turno.especialista.nombre}} -
-                                {{historial.turno.especialidad}}</h6>
+                            <h5 class="card-title">Turno #{{i+1}} <span *ngIf="turno.detalle != 'N/A'">-
+                                    {{turno.detalle}}</span></h5>
+                            <h6 class="card-title">Revision hecha por {{turno.especialista.nombre}} -
+                                {{turno.especialidad}}</h6>
                             <div class="row">
                                 <div class="col-md-6">
                                     <h6 class="card-title h7">Diagnosticos</h6>
-                                    <p class="card-text">{{historial.turno.mensaje}}</p>
+                                    <p class="card-text">{{turno.mensaje}}</p>
                                     <h6 class="card-title h7">Otros detalles al momento de la visita</h6>
                                     <p class="card-text">
-                                        Altura: {{historial.altura}} centimetros<br>
-                                        Peso: {{historial.peso}}Kg<br>
-                                        Temperatura: {{historial.temperatura}}°C<br>
-                                        Presion: {{historial.presion}}<br>
+                                        Altura: {{turno.historial.altura}} centimetros<br>
+                                        Peso: {{turno.historial.peso}}Kg<br>
+                                        Temperatura: {{turno.historial.temperatura}}°C<br>
+                                        Presion: {{turno.historial.presion}}<br>
                                     </p>
                                 </div>
                                 <div class="col-md-6">
                                     <h6 class="card-title">Datos extra</h6>
                                     <p class="card-text">
-                                        <ng-container *ngFor="let datoExtra of historial.datosExtra">
+                                        <ng-container *ngFor="let datoExtra of turno.historial.datosExtra">
                                             {{datoExtra | mapToText}}<br>
                                         </ng-container>
                                     </p>
@@ -37,12 +37,12 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <p class="card-text"><small class="text-muted">Visitado en
-                                            {{historial.turno.fecha_turno |
+                                            {{turno.fecha_turno |
                                             date:'short'}}</small></p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="card-text"><small class="text-muted">Estado del turno:
-                                            {{historial.turno.estado}}</small></p>
+                                            {{turno.estado}}</small></p>
                                 </div>
                             </div>
                         </div>

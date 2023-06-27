@@ -62,9 +62,6 @@ export class ModalFinalizarTurnoComponent {
   finalizarTurno() {
     if (!this.formularioFinalizarTurno.valid) return;
 
-    let mensaje = this.formularioFinalizarTurno.get('descripcion')?.value;
-
-    this.turnosService.actualizarEstadoTurno(this.turno, EstadosTurnos.finalizado, mensaje);
 
     let altura = this.formularioFinalizarTurno.get('altura')?.value;
     let peso = this.formularioFinalizarTurno.get('peso')?.value;
@@ -79,11 +76,12 @@ export class ModalFinalizarTurnoComponent {
       return { [datos.clave]: datos.valor };
     });
 
-    let nuevoHistorial = new Historial('0', altura, peso, temperatura, presion);
-    nuevoHistorial.turno = this.turno;
+    let nuevoHistorial = new Historial(altura, peso, temperatura, presion);
     nuevoHistorial.datosExtra = mapDatosExtra;
 
-    this.historialService.nuevoHistorial(nuevoHistorial).then(() => {
+    let mensaje = this.formularioFinalizarTurno.get('descripcion')?.value;
+
+    this.turnosService.actualizarEstadoTurno(this.turno, EstadosTurnos.finalizado, mensaje, nuevoHistorial).then(() => {
       this.mostrarModal('Historial agregado', 'success', 'Vinculado el historial al paciente con exito.');
       this.botonCierreModal.nativeElement.click();
     }).catch(() => {

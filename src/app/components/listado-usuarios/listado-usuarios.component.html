@@ -1,7 +1,11 @@
 <section class="container-fluid">
     <article>
         <div class="p-2 mb-1 bg-light-dark rounded-3">
-            <div class="container-fluid py-2">
+            <div class="container-fluid py-3">
+                <div class="d-flex">
+                    <h3 class="h3 me-3">Listado de usuarios</h3>
+                    <button class="btn btn-success mb-2" (click)="descargarListadoUsuarios()">Descargar excel</button>
+                </div>
                 <app-tabla-usuarios [usuarios$]="usuarios$" (eligioUsuario)="mostrarHistorialUsuario($event)" />
             </div>
         </div>

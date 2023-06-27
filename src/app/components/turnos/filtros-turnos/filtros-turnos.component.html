@@ -1,16 +1,13 @@
 <div class="d-flex flex-column col-md-12">
     <h3>Filtros tabla</h3>
     <form class="d-flex mb-3" [formGroup]="formularioFiltros">
-        <div class="form-group col-md-3 me-4">
-            <label for="especialidad" class="col-xs-3 col-sm-auto col-form-label">Buscar por especialidad:</label>
+        <div class="form-group col-md-2 me-2">
+            <label for="especialidad" class="col-xs-3 col-sm-auto col-col-xs-3 col-sm-auto col-form-label">Buscar por especialidad:</label>
             <input id="especialidad" type="text" class="form-control" formControlName="especialidad"
                 [ngbTypeahead]="buscarEspecialidad" (focus)="focus$.next($any($event).target.value)"
                 (click)="click$.next($any($event).target.value)" #selectEsp="ngbTypeahead" />
             <div *ngIf="formularioFiltros.get('especialidad')?.invalid && (formularioFiltros.get('especialidad')?.dirty || formularioFiltros.get('especialidad')?.touched)"
                 class="alert alert-danger mt-3">
-                <div *ngIf="formularioFiltros.get('especialidad')?.errors?.['required']">
-                    La especilidad es requerida
-                </div>
                 <div *ngIf="formularioFiltros.get('especialidad')?.errors?.['minlength']">
                     El campo especialidad debe contener como minimo 6 caracteres.
                 </div>
@@ -24,30 +21,101 @@
             <ngb-highlight [result]="r.nombre" [term]="t"></ngb-highlight>
         </ng-template>
 
-        <div class="form-group col-md-3" *ngIf="filtrarPor == 'especialista';else filtroPaciente">
-            <label for="especialistas" class="col-xs-3 col-sm-auto col-form-label">Especialistas:</label>
+        <div class="form-group col-md-2 me-2" *ngIf="filtrarPor == 'especialista';else filtroPaciente">
+            <label for="especialistas" class="col-xs-3 col-sm-auto col-col-xs-3 col-sm-auto col-form-label">Especialistas:</label>
             <input id="especialistas" type="text" class="form-control" [resultTemplate]="rt"
                 [inputFormatter]="formatter" formControlName="especialista" [ngbTypeahead]="buscarEspecialista"
                 [editable]="false" />
-            <div *ngIf="formularioFiltros.get('especialista')?.invalid && (formularioFiltros.get('especialista')?.dirty || formularioFiltros.get('especialista')?.touched)"
+        </div>
+
+        <div class="form-group col-md-2 me-2">
+            <label for="altura" class="col-xs-3 col-sm-auto col-form-label">Altura en centimetros</label>
+            <div class="input-group">
+                <input id="altura" type="number" formControlName="altura" class="form-control" placeholder="Altura">
+                <span class="input-group-text">Cm</span>
+            </div>
+            <div *ngIf="formularioFiltros.get('altura')?.invalid && (formularioFiltros.get('altura')?.dirty || formularioFiltros.get('altura')?.touched)"
                 class="alert alert-danger mt-3">
-                <div *ngIf="formularioFiltros.get('especialista')?.errors?.['required']">
-                    Un medico es requerido para el turno.
+                <div *ngIf="formularioFiltros.get('altura')?.errors?.['min']">
+                    El campo altura debe ser como minimo 100 centimetros.
+                </div>
+                <div *ngIf="formularioFiltros.get('altura')?.errors?.['max']">
+                    El campo altura debe ser como maximo 250 centimetros.
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group col-md-2 me-2">
+            <label for="peso" class="col-xs-3 col-sm-auto col-form-label">Peso corporal</label>
+            <div class="input-group">
+                <input id="peso" type="number" formControlName="peso" class="form-control" placeholder="Peso">
+                <span class="input-group-text">Kg</span>
+            </div>
+            <div *ngIf="formularioFiltros.get('peso')?.invalid && (formularioFiltros.get('peso')?.dirty || formularioFiltros.get('peso')?.touched)"
+                class="alert alert-danger mt-3">
+                <div *ngIf="formularioFiltros.get('peso')?.errors?.['max']">
+                    El campo peso debe ser como maximo de 200 kilogramos.
+                </div>
+                <div *ngIf="formularioFiltros.get('peso')?.errors?.['min']">
+                    El campo peso debe ser como minimo de 20 kilogramos.
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label for="temperatura" class="col-xs-3 col-sm-auto col-form-label">Temperatura</label>
+                <div class="input-group">
+                    <input id="temperatura" type="number" formControlName="temperatura" class="form-control"
+                        placeholder="Temperatura">
+                    <span class="input-group-text">C°</span>
+                </div>
+                <div *ngIf="formularioFiltros.get('temperatura')?.invalid && (formularioFiltros.get('temperatura')?.dirty || formularioFiltros.get('temperatura')?.touched)"
+                    class="alert alert-danger mt-3">
+                    <div *ngIf="formularioFiltros.get('temperatura')?.errors?.['max']">
+                        El campo temperatura debe ser como maximo 50°C.
+                    </div>
+                    <div *ngIf="formularioFiltros.get('temperatura')?.errors?.['min']">
+                        El campo temperatura debe ser como minimo 30°C.
+                    </div>
+                </div>
+            </div>
+
+            <label for="presion" class="col-xs-3 col-sm-auto col-form-label">Presion arterial</label>
+            <div class="input-group">
+                <input id="presion" type="number" formControlName="presionMinima" class="form-control"
+                    placeholder="Presion minima" aria-label="presionMinima">
+                <span class="input-group-text">/</span>
+                <input type="number" class="form-control" formControlName="presionMaxima" placeholder="máxima"
+                    aria-label="presionMaxima">
+                <span class="input-group-text">mm Hg</span>
+                <div *ngIf="formularioFiltros.get('presionMinima')?.invalid && (formularioFiltros.get('presionMinima')?.dirty || formularioFiltros.get('presionMinima')?.touched)"
+                    class="alert alert-danger mt-2">
+                    <div *ngIf="formularioFiltros.get('presionMinima')?.errors?.['max']">
+                        El campo presion minima debe ser como maximo 10.
+                    </div>
+                    <div *ngIf="formularioFiltros.get('presionMinima')?.errors?.['min']">
+                        El campo presion minima debe ser como minimo 6.
+                    </div>
+                </div>
+                <div *ngIf="formularioFiltros.get('presionMaxima')?.invalid && (formularioFiltros.get('presionMaxima')?.dirty || formularioFiltros.get('presionMaxima')?.touched)"
+                    class="alert alert-danger mt-2">
+                    <div *ngIf="formularioFiltros.get('presionMaxima')?.errors?.['max']">
+                        El campo presion maxima debe ser como maximo 25.
+                    </div>
+                    <div *ngIf="formularioFiltros.get('presionMaxima')?.errors?.['min']">
+                        El campo presion maxima debe ser como minimo 11.
+                    </div>
                 </div>
             </div>
         </div>
 
         <ng-template #filtroPaciente>
-            <div class="form-group col-md-3">
-                <label for="pacientes" class="col-xs-3 col-sm-auto col-form-label">Pacientes:</label>
+            <div class="form-group col-md-2 me-2">
+                <label for="pacientes" class="col-xs-3 col-sm-auto col-col-xs-3 col-sm-auto col-form-label">Pacientes:</label>
                 <input id="pacientes" type="text" class="form-control" [resultTemplate]="rt"
                     [inputFormatter]="formatter" formControlName="paciente" [ngbTypeahead]="buscarPaciente"
                     [editable]="false" />
-                <div *ngIf="formularioFiltros.get('paciente')?.invalid && (formularioFiltros.get('paciente')?.dirty || formularioFiltros.get('paciente')?.touched)"
-                    class="alert alert-danger mt-3">
-                    <div *ngIf="formularioFiltros.get('paciente')?.errors?.['required']">
-                        El paciente para este turno es requerido.</div>
-                </div>
             </div>
         </ng-template>
     </form>

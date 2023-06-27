@@ -30,6 +30,11 @@ export class FiltrosTurnosComponent implements OnInit {
   constructor(formBuilder: FormBuilder, public usuariosService: UsuarioService) {
     this.formularioFiltros = formBuilder.group({
       especialidad: new FormControl<Especialidades | null>(null, [Validators.minLength(6), Validators.maxLength(255)]),
+      altura: new FormControl(null, [Validators.max(250), Validators.min(100)]),
+      peso: new FormControl(null, [Validators.max(200), Validators.min(10)]),
+      temperatura: new FormControl(null, [Validators.max(50), Validators.min(30)]),
+      presionMaxima: new FormControl(null, [Validators.max(25), Validators.min(11)]), //escrito como 120/80 mm Hg
+      presionMinima: new FormControl(null, [Validators.max(10), Validators.min(6)]),
     });
 
     this.formularioFiltros.valueChanges.pipe(
@@ -99,30 +104,41 @@ export class FiltrosTurnosComponent implements OnInit {
 
   formatter = (x: Usuario) => x.nombre;
 
-  actualizarFiltros(data: any) {
+  actualizarFiltros(data: any) { //perdon
     if (!this.formularioFiltros.valid ||
       (data['especialidad'] == null &&
         data['paciente'] == null &&
-        data['especialista'] == null)) return;
+        data['especialista'] == null &&
+        data['peso'] == null &&
+        data['temperatura'] == null &&
+        data['presionMaxima'] == null &&
+        data['altura'] == null)) return;
 
 
-    let filtros: FiltroTurnos = {
-      especialidad: data['especialidad'],
-    };
+    let filtros: FiltroTurnos = {};
 
-    if (this.filtrarPor == 'paciente') {
-      filtros.paciente = data['paciente'];
-    } else {
-      filtros.especialista = data['especialista'];
+    for (const [key, value] of Object.entries(data)) {
+      switch (key) {
+        case 'paciente': filtros[key] = value as Paciente; break;
+        case 'especialista': filtros[key] = value as Especialista; break;
+        case 'especialidad': filtros[key] = value as string; break;
+        case 'altura': filtros[key] = value as number; break;
+        case 'peso': filtros[key] = value as number; break;
+        case 'temperatura': filtros[key] = value as number; break;
+        case 'presionMaxima': filtros['presion'] = value as string; break;
+      }
     }
-
 
     this.filtro.emit(filtros);
   }
 }
 
 export interface FiltroTurnos {
-  especialidad: Especialidades,
+  especialidad?: string,
   paciente?: Paciente,
   especialista?: Especialista,
+  altura?: number,
+  peso?: number,
+  temperatura?: number,
+  presion?: string,
 }

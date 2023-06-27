@@ -1,8 +1,9 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Historial } from 'src/app/classes/historial/historial';
+import { EstadosTurnos, Turno } from 'src/app/classes/turno/turno';
 import { Usuario } from 'src/app/classes/usuarios/usuario';
-import { HistorialService } from 'src/app/services/historial/historial.service';
+import { TurnosService } from 'src/app/services/turnos/turnos.service';
+
 
 @Component({
   selector: 'app-historial',
@@ -15,15 +16,22 @@ export class HistorialComponent implements OnInit, OnChanges {
 
   @Input() mostrarImagenPerfil: boolean;
 
-  historiales$: Observable<Historial[]>;
+  @Input() especialidad?: string;
 
-  constructor(private historialService: HistorialService) { }
+  turnos$: Observable<Turno[]>;
+
+  constructor(private turnosService: TurnosService) { }
 
   ngOnInit(): void {
-    this.historiales$ = this.historialService.traerHistorialesUsuario(this.usuario);
+    this.turnos$ = this.turnosService.traerTurnosUsuario(this.usuario, EstadosTurnos.finalizado);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.historiales$ = this.historialService.traerHistorialesUsuario(this.usuario);
+    if (changes['especialidad']) {
+      let especialidad = changes['especialidad'].currentValue;
+      this.turnos$ = this.turnosService.traerTurnosUsuario(this.usuario, EstadosTurnos.finalizado, especialidad);
+    } else {
+      this.turnos$ = this.turnosService.traerTurnosUsuario(this.usuario, EstadosTurnos.finalizado);
+    }
   }
 }

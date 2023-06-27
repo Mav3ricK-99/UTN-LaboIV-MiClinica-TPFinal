@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CollectionReference, DocumentData, Firestore, addDoc, and, collection, collectionData, doc, getDoc, query, updateDoc, where } from '@angular/fire/firestore';
+import { CollectionReference, DocumentData, Firestore, QueryFilterConstraint, addDoc, and, collection, collectionData, doc, getDoc, query, updateDoc, where } from '@angular/fire/firestore';
 import { Paciente } from 'src/app/classes/usuarios/paciente/paciente';
 import { UsuarioService } from '../usuarios/usuarios.service';
 import { map } from 'rxjs';
@@ -7,6 +7,7 @@ import { CalificacionTurno, EncuestaTurno, EstadosTurnos, Turno } from 'src/app/
 import { Usuario } from 'src/app/classes/usuarios/usuario';
 import { Especialista } from 'src/app/classes/usuarios/especialista/especialista';
 import { FiltroTurnos } from 'src/app/components/turnos/filtros-turnos/filtros-turnos.component';
+import { Historial } from 'src/app/classes/historial/historial';
 
 @Injectable({
   providedIn: 'root'
@@ -89,12 +90,22 @@ export class TurnosService {
     }));
   }
 
-  actualizarEstadoTurno(turno: Turno, estado: EstadosTurnos, mensaje?: string) {
+  actualizarEstadoTurno(turno: Turno, estado: EstadosTurnos, mensaje?: string, historial?: Historial) {
     const documento = doc(this.firestore, `turnos`, turno.uid);
-    return updateDoc(documento, {
-      estado: estado,
-      mensaje: mensaje ?? ''
-    });
+    let obj: any = { estado: estado };
+    if (mensaje) {
+      obj.mensaje = mensaje;
+    }
+    if (historial) {
+      obj.historial = {
+        altura: historial.altura,
+        peso: historial.peso,
+        temperatura: historial.temperatura,
+        presion: historial.presion,
+        datosExtra: historial.datosExtra
+      };
+    }
+    return updateDoc(documento, obj);
   }
 
   calificarTurno(turno: Turno, calificacionTurno: CalificacionTurno) {
@@ -111,7 +122,7 @@ export class TurnosService {
     });
   }
 
-  traerTurnosUsuario(usuario: Usuario) {
+  traerTurnosUsuario(usuario: Usuario, estadoTurno?: EstadosTurnos, especialidad?: string) {
 
     let tipoUsuario: string = '';
     if (usuario instanceof Especialista) {
@@ -120,7 +131,15 @@ export class TurnosService {
       tipoUsuario = 'paciente_uid';
     };
 
-    const q = query(this.turnosCollection, where(tipoUsuario, "==", usuario.uid));
+    let q = query(this.turnosCollection, where(tipoUsuario, "==", usuario.uid));
+
+    if (estadoTurno) {
+      q = query(this.turnosCollection, where(tipoUsuario, "==", usuario.uid), where('estado', "==", estadoTurno));
+    }
+
+    if (estadoTurno && especialidad) {
+      q = query(this.turnosCollection, where(tipoUsuario, "==", usuario.uid), where('estado', "==", estadoTurno), where('especialidad', "==", especialidad));
+    }
 
     return collectionData(q, { idField: 'uid' }).pipe(map(collection => {
       return collection.map(b => {
@@ -153,6 +172,10 @@ export class TurnosService {
         turno.mensaje = data['mensaje'];
       }
 
+      if (data['historial']) {
+        turno.historial = data['historial'];
+      }
+
       if (this.usuariosService.usuarioIngresado instanceof Paciente) {
         turno.paciente = this.usuariosService.usuarioIngresado;
       }
@@ -183,8 +206,8 @@ export class TurnosService {
 
   filtrar(filtros: FiltroTurnos) {
     let qAnd: any = where('especialidad', '==', filtros.especialidad);
-
-    if (filtros.especialidad != undefined) { //gracias firebaseangularjsyasclñacn
+    console.log(filtros)
+    if (filtros.especialidad != undefined && filtros.especialidad != "") { //gracias firebaseangularjsyasclñacn
       if (filtros.paciente) { //Filtro por paciente
         qAnd = and(
           where('especialidad', '==', filtros.especialidad),

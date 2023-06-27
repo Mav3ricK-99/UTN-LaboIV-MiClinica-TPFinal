@@ -1,6 +1,7 @@
 import { Timestamp } from "@angular/fire/firestore";
 import { Especialista } from "../usuarios/especialista/especialista";
 import { Paciente } from "../usuarios/paciente/paciente";
+import { Historial } from "../historial/historial";
 
 export class Turno {
 
@@ -15,6 +16,8 @@ export class Turno {
     public calificacion: CalificacionTurno;
     public encuesta: EncuestaTurno;
     public mensaje: string;
+
+    public historial: Historial;
 
     constructor(uid: string, especialidad: string, fecha_turno: Timestamp | Date, detalle?: string, especialista?: Especialista, paciente?: Paciente, estado?: EstadosTurnos) {
         this.uid = uid;

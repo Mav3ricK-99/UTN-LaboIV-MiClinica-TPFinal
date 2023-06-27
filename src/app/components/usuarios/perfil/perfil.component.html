@@ -15,7 +15,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-8">
+            <div [@openClose]="isOpen ? 'open' : 'closed'" class="open-close-container col-lg-8">
                 <h3>Datos</h3>
                 <div class="card mb-4">
                     <div class="card-body">
@@ -58,9 +58,36 @@
                         </ng-container>
                     </div>
                 </div>
-                <div class="row">
-                    <h3>Historial clinico</h3>
-                    <app-historial [usuario]="usuario" [mostrarImagenPerfil]="false"/>
+                <div *ngIf="!usuario?.isAdmin()" class="row">
+                    <div class="d-flex mb-2 align-items-center">
+                        <div class="d-flex flex-column me-3">
+                            <h3>Historial clinico</h3>
+                            <form class="d-flex mb-3" [formGroup]="formularioFiltros">
+                                <div class="form-group col-md-12">
+                                    <label for="especialidad"
+                                        class="col-xs-3 col-sm-auto col-col-xs-3 col-sm-auto col-form-label">Buscar por
+                                        especialidad:</label>
+                                    <input id="especialidad" type="text" class="form-control"
+                                        formControlName="especialidad" [ngbTypeahead]="buscarEspecialidad"
+                                        (focus)="focus$.next($any($event).target.value)"
+                                        (click)="click$.next($any($event).target.value)" #selectEsp="ngbTypeahead" />
+                                    <div *ngIf="formularioFiltros.get('especialidad')?.invalid && (formularioFiltros.get('especialidad')?.dirty || formularioFiltros.get('especialidad')?.touched)"
+                                        class="alert alert-danger mt-3">
+                                        <div *ngIf="formularioFiltros.get('especialidad')?.errors?.['minlength']">
+                                            El campo especialidad debe contener como minimo 6 caracteres.
+                                        </div>
+                                        <div *ngIf="formularioFiltros.get('especialidad')?.errors?.['maxlength']">
+                                            El campo especialidad debe contener como maximo 255 caracteres.
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <button (click)="descargarPDF()" class="btn btn-success" style="max-height: 10vh;">Descargar
+                            PDF</button>
+                    </div>
+                    <app-historial [especialidad]="especialidadTurno" [usuario]="usuario"
+                        [mostrarImagenPerfil]="false" />
                 </div>
             </div>
         </div>
