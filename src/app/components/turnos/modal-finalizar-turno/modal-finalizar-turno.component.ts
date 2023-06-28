@@ -3,7 +3,6 @@ import { EstadosTurnos, Turno } from 'src/app/classes/turno/turno';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { TurnosService } from 'src/app/services/turnos/turnos.service';
 import { Historial } from 'src/app/classes/historial/historial';
-import { HistorialService } from 'src/app/services/historial/historial.service';
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-modal-finalizar-turno',
@@ -18,7 +17,7 @@ export class ModalFinalizarTurnoComponent {
 
   formularioFinalizarTurno: FormGroup;
 
-  constructor(private turnosService: TurnosService, private historialService: HistorialService, private formBuilder: FormBuilder) {
+  constructor(private turnosService: TurnosService, private formBuilder: FormBuilder) {
     this.formularioFinalizarTurno = this.formBuilder.group({
       descripcion: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]),
       altura: new FormControl('', [Validators.required, Validators.max(250), Validators.min(100)]),

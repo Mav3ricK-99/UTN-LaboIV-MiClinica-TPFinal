@@ -1,4 +1,4 @@
-<section class="container-fluid" [@listadoOcultot]="listadoOculto ? 'oculta' : 'mostrar'">
+<section class="container-fluid">
     <article>
         <div class="p-2 mb-2 bg-light-dark rounded-3">
             <div class="container-fluid py-5">
@@ -18,8 +18,6 @@
                         <h3 class="text-center p-2">Todos los turnos</h3>
                         <app-tabla-turnos-administrador [filtros]="filtroTurnos"/>
                     </ng-container>
-
-
                 </container-element>
             </div>
         </div>

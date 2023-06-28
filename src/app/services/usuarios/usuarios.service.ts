@@ -8,7 +8,7 @@ import { map } from 'rxjs';
 import { Paciente } from 'src/app/classes/usuarios/paciente/paciente';
 import { Especialista } from 'src/app/classes/usuarios/especialista/especialista';
 import { beforeAuthStateChanged } from '@angular/fire/auth';
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 @Injectable()
 
@@ -20,7 +20,6 @@ export class UsuarioService {
 
   constructor(private firestore: Firestore, private afAuth: AngularFireAuth, private router: Router) {
     this.usuariosCollection = collection(this.firestore, 'usuarios');
-
     const auth = getAuth();
     beforeAuthStateChanged(auth, (user) => {
       const lastSignIn = user?.metadata.lastSignInTime;
@@ -57,7 +56,9 @@ export class UsuarioService {
             } else {
               this.usuarioIngresado = this.armarUsuario(data);
             }
-            localStorage.setItem('currentUser', JSON.stringify(this.usuarioIngresado));
+            setTimeout(() => {
+              localStorage.setItem('currentUser', JSON.stringify(this.usuarioIngresado));
+            }, 2500);
           }
         });
       } else {
@@ -67,8 +68,14 @@ export class UsuarioService {
     });
   }
 
-  traerTodos() {
-    return collectionData(this.usuariosCollection, { idField: 'uid' }).pipe(map(collection => {
+  traerTodos(tipoUsuario?: string) {
+    let q = query(this.usuariosCollection);
+
+    if (tipoUsuario) {
+      q = query(this.usuariosCollection, where('tipoUsuario', '==', tipoUsuario));
+    }
+
+    return collectionData(q, { idField: 'uid' }).pipe(map(collection => {
       return collection.map(b => {
         let usuario: Usuario;
         switch (b['tipoUsuario']) {
@@ -118,12 +125,12 @@ export class UsuarioService {
       obraSocial: paciente.obraSocial,
       nroAfiliado: paciente.nroAfiliado,
       tipoUsuario: paciente.tipoUsuario,
-      cuentaHabilitada: paciente.cuentaHabilitada
+      cuentaHabilitada: paciente.cuentaHabilitada,
+      pathImagen: paciente.pathImagen
     });
   }
 
   crearEspecialista(especialista: Especialista, id: string) {
-
     return setDoc(doc(this.usuariosCollection, id), {
       uid: id,
       email: especialista.email,
@@ -133,7 +140,8 @@ export class UsuarioService {
       especialidad: especialista.especialidad,
       nroMatricula: especialista.nroMatricula,
       tipoUsuario: especialista.tipoUsuario,
-      cuentaHabilitada: especialista.cuentaHabilitada
+      cuentaHabilitada: especialista.cuentaHabilitada,
+      pathImagen: especialista.pathImagen
     });
   }
 
@@ -146,7 +154,8 @@ export class UsuarioService {
       edad: usuario.edad,
       dni: usuario.dni,
       tipoUsuario: usuario.tipoUsuario,
-      cuentaHabilitada: true
+      cuentaHabilitada: true,
+      pathImagen: usuario.pathImagen
     });
   }
 
@@ -163,7 +172,7 @@ export class UsuarioService {
         res.user.sendEmailVerification();
       }
       return res;
-    })
+    });
   }
 
   async ingresarUsuario(email: string, password: string) {
@@ -179,24 +188,40 @@ export class UsuarioService {
   }
 
   armarUsuario(data: any): Usuario {
-    let usuario = new Usuario(data['uid'], data['nombre'], data['edad'], data['dni'], data['email'], data['cuentaHabilitada'], data['pathImagen']);
-    if (data['tipoUsuario'] == 'admin') {
-      usuario.tipoUsuario = 'admin';
+    let usuario = new Usuario(data['uid'], data['nombre'], data['edad'], data['dni'], data['email'], data['cuentaHabilitada']);
+    usuario.tipoUsuario = data['tipoUsuario'];
+
+    if (data['pathImagen'] && !(data['pathImagen'] as string).includes('default_user')) {
+      const storage = getStorage();
+      const imagesRef = ref(storage, data['pathImagen']);
+      getDownloadURL(imagesRef).then(imagenUrl => usuario.pathImagen = imagenUrl);
     }
 
     return usuario;
   }
 
   armarPaciente(data: any): Paciente {
-    let paciente = new Paciente(data['uid'], data['nombre'], data['edad'], data['dni'], data['email'], data['cuentaHabilitada'], data['pathImagen'], data['obraSocial'], data['nroAfiliado']);
+    let paciente = new Paciente(data['uid'], data['nombre'], data['edad'], data['dni'], data['email'], data['cuentaHabilitada'], data['obraSocial'], data['nroAfiliado']);
     paciente.tipoUsuario = data['tipoUsuario'];
+
+    if (data['pathImagen'] && !(data['pathImagen'] as string).includes('default_user')) {
+      const storage = getStorage();
+      const imagesRef = ref(storage, data['pathImagen']);
+      getDownloadURL(imagesRef).then(imagenUrl => paciente.pathImagen = imagenUrl);
+    }
 
     return paciente;
   }
 
   armarEspecialista(data: any): Especialista {
-    let especialista = new Especialista(data['uid'], data['nombre'], data['edad'], data['dni'], data['email'], data['cuentaHabilitada'], data['pathImagen'], data['especialidad'], data['nroMatricula']);
+    var especialista = new Especialista(data['uid'], data['nombre'], data['edad'], data['dni'], data['email'], data['cuentaHabilitada'], data['especialidad'], data['nroMatricula']);
     especialista.tipoUsuario = data['tipoUsuario'];
+
+    if (data['pathImagen'] && !(data['pathImagen'] as string).includes('default_user')) {
+      const storage = getStorage();
+      const imagesRef = ref(storage, data['pathImagen']);
+      getDownloadURL(imagesRef).then(imagenUrl => especialista.pathImagen = imagenUrl);
+    }
 
     return especialista;
   }
@@ -241,7 +266,7 @@ export class UsuarioService {
     let q;
     if (tipoUsuario) {
       q = query(this.usuariosCollection, and(
-        /* where("tipoUsuario", "==", tipoUsuario) ,*/
+        /* where("tipoUsuario", "==", tipoUsuario) , */
         or(
           where("nombre", ">=", nombreUsuario),
           where("nombre", "<=", nombreUsuario + '\uf8ff')

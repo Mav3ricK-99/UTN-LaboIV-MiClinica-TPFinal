@@ -1,12 +1,13 @@
 <section class="container-fluid">
     <article>
         <div class="p-2 mb-1 bg-light-dark rounded-3">
-            <div class="container-fluid py-3">
+            <div class="container-fluid py-2">
                 <div class="d-flex">
                     <h3 class="h3 me-3">Listado de usuarios</h3>
                     <button class="btn btn-success mb-2" (click)="descargarListadoUsuarios()">Descargar excel</button>
                 </div>
                 <app-tabla-usuarios [usuarios$]="usuarios$" (eligioUsuario)="mostrarHistorialUsuario($event)" />
+                <small class="text-muted">*Hace doble click sobre un paciente para ver su historial</small>
             </div>
         </div>
     </article>
@@ -18,17 +19,27 @@
     </article>
 
     <article class="d-flex align-items-center flex-column">
+        <h3 class="h3">Alta de usuarios</h3>
         <div class="col-lg-12 justify-content-around d-flex pt-2">
-            <button type="button" class="btnAlta btnAltaPac" (click)="cambiarFormulario('pacientes')">
-                Alta de Pacientes
-            </button>
-            <button type="button" class="btnAlta btnAltaEsp" (click)="cambiarFormulario('especialistas')">
-                Alta de Especialistas
-            </button>
-            <button type="button" class="btnAlta btnAltaAdm" (click)="cambiarFormulario('administradores')">
-                Alta de Administradores
-            </button>
+            <div class="card" (click)="cambiarFormulario('pacientes')">
+                <img src="./assets/pacientes.avif" class="card-img-top" alt="paciente">
+                <div class="card-body">
+                    <h5 class="card-title">Paciente</h5>
+                </div>
+            </div>
+            <div class="card" (click)="cambiarFormulario('especialistas')">
+                <img src="./assets/especialistas.avif" class="card-img-top" alt="especialista">
+                <div class="card-body">
+                    <h5 class="card-title">Especialista</h5>
+                </div>
+            </div>
+            <div class="card" (click)="cambiarFormulario('administradores')">
+                <img src="./assets/administrador.avif" class=" card-img-top" alt="admin">
+                <div class="card-body">
+                    <h5 class="card-title">Administrador</h5>
+                </div>
+            </div>
         </div>
-        <app-formulario-alta class="col-lg-7" [mostrarFormulario]="mostrarFormulario" />
+        <app-formulario-alta class="col-lg-7" *ngIf="mostrarFormulario" [mostrarFormulario]="mostrarFormulario" />
     </article>
 </section>

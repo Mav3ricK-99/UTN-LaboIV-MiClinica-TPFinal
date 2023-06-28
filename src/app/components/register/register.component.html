@@ -1,18 +1,10 @@
 <section class="d-flex justify-content-around p-4 px-5">
     <article class="bg-light">
         <img class="rounded-left img-form"
-            src="https://images.unsplash.com/photo-1599045118108-bf9954418b76?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80"
+            src="./assets/formulario.avif"
             alt="MiClinica">
     </article>
     <article class="flex-fill p-2 bg-light rounded-right">
-        <div class="col-lg-12 justify-content-around d-flex pt-2">
-            <button type="button" class="btnAlta btnAltaPac" (click)="cambiarFormulario('pacientes')">
-                Alta de Pacientes
-            </button>
-            <button type="button" class="btnAlta btnAltaEsp" (click)="cambiarFormulario('especialistas')">
-                Alta de Especialistas
-            </button>
-        </div>
         <app-formulario-alta [mostrarFormulario]="mostrarFormulario"/>
     </article>
 </section>

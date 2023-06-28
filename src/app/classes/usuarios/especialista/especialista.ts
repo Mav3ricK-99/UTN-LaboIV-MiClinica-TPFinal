@@ -3,15 +3,15 @@ import { Usuario } from "../usuario";
 
 export class Especialista extends Usuario {
 
-    public especialidad: string;
+    public especialidad: string[];
     public nroMatricula: number;
 
     public turnos: Turno[] = [];
 
-    constructor(uid?: string, nombre?: string, edad?: number, dni?: number, email?: string, cuentaHabilitada?: boolean, pathImagen?: string, especialidad?: string, nroMatricula?: number) {
-        super(uid, nombre, dni, edad, email, cuentaHabilitada, pathImagen);
+    constructor(uid?: string, nombre?: string, edad?: number, dni?: number, email?: string, cuentaHabilitada?: boolean, especialidad?: string[], nroMatricula?: number) {
+        super(uid, nombre, dni, edad, email, cuentaHabilitada);
 
-        this.especialidad = especialidad ?? '';
+        this.especialidad = especialidad ?? [];
         this.nroMatricula = nroMatricula ?? 0;
 
         this.tipoUsuario = 'especialista';
@@ -22,12 +22,13 @@ export class Especialista extends Usuario {
         this.turnos.push(turno);
     }
 
-    disponibilidadProxima(): Date | undefined {
-        if (!this.turnos) undefined;
+    disponibilidadesProximas(): Date[] {
+        if (!this.turnos) return [];
 
-        var fechaEncontrada: boolean = false;
         var fechaProximoTurnoMili = Date.now();
         var fechaProximoTurno: Date = new Date();
+
+        var dates: Date[] = [];
 
         let intento = 0;
         var agregarMinutos = true;
@@ -52,18 +53,16 @@ export class Especialista extends Usuario {
             } else {
                 agregarMinutos = true;
             }
-
             if (this.disponibleEnFecha(fechaProximoTurno)) {
-                fechaEncontrada = true;
+                dates.push(fechaProximoTurno)
             }
 
-        } while (fechaEncontrada == false && intento <= 180); //15 dias Maximo
-
-        return fechaEncontrada ? fechaProximoTurno : undefined;
+        } while (intento <= 20);
+        return dates;
     }
 
     disponibleEnFecha(fecha: Date): boolean {
-        if (!this.turnos.length) return false;
+        if (!this.turnos.length) return true;
         var disponibleEnFecha = true;
         this.turnos.forEach((turno) => {
             if (turno.estado == EstadosTurnos.aprobado) {

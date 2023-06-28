@@ -204,9 +204,9 @@ export class TurnosService {
     }
   }
 
-  filtrar(filtros: FiltroTurnos) {
+  filtrar(filtros: FiltroTurnos) { //No puedo pasarle un array de 'wheres' a 'and'..
     let qAnd: any = where('especialidad', '==', filtros.especialidad);
-    console.log(filtros)
+
     if (filtros.especialidad != undefined && filtros.especialidad != "") { //gracias firebaseangularjsyasclñacn
       if (filtros.paciente) { //Filtro por paciente
         qAnd = and(

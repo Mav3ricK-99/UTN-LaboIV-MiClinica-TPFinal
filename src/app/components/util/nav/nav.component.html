@@ -36,12 +36,6 @@
                             </li>
                         </ng-container>
 
-                        <!-- <li class="fs-5">
-                        <a href="#" class="d-flex flex-column nav-link text-white">
-                            <i class="bi bi-speedometer2 mx-auto mb-1"></i>
-                            Estadisticas
-                        </a>
-                    </li> -->
                         <li *ngIf="usuariosService.usuarioIngresado?.tipoUsuario == 'especialista'" class="fs-5">
                             <a href="#" class="d-flex flex-column fw-bold nav-link text-white" routerLink="/pacientes">
                                 <i class="bi bi-people mx-auto mb-1"></i>

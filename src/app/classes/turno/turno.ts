@@ -31,7 +31,7 @@ export class Turno {
 
     finalizado(): boolean {
         let fechaHoy = new Date();
-        return this.estado == EstadosTurnos.finalizado || fechaHoy < this.fecha_turno;
+        return this.estado == EstadosTurnos.finalizado || fechaHoy > this.fecha_turno;
     }
 
     activo(): boolean {
@@ -40,6 +40,10 @@ export class Turno {
 
     pendiente(): boolean {
         return this.estado == EstadosTurnos.pendiente;
+    }
+
+    aprobado(): boolean {
+        return this.estado == EstadosTurnos.aprobado;
     }
 
     existeEncuesta(): boolean {

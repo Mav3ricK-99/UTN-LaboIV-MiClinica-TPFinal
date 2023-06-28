@@ -1,7 +1,7 @@
-<div class="col-md-12">
+<div class="col-md-12" id="historiales">
     <div *ngIf="(turnos$ | async) as turnos; else loader">
         <ng-container *ngIf="turnos.length > 0; else noHayHistoriales">
-            <div class="card mb-3" id="historiales" *ngFor="let turno of turnos; let i = index">
+            <div class="card mb-3" *ngFor="let turno of turnos; let i = index">
                 <div class="row g-0" *ngIf="turno.historial">
                     <div *ngIf="mostrarImagenPerfil" class="align-self-center" [class.col-md-3]="!mostrarImagenPerfil"
                         [class.col-md-4]="mostrarImagenPerfil">

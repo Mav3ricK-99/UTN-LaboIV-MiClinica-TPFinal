@@ -1,8 +1,8 @@
 <div [ngSwitch]="mostrarFormulario">
     <div *ngSwitchCase="'pacientes'">
         <h2 id="tituloPacientes" class="text-center p-3">Ingreso de Pacientes</h2>
-        <form [formGroup]="formularioRegistroPaciente" (ngSubmit)="registrarPaciente()">
-            <div class="form-row d-flex justify-content-around mb-4">
+        <form [formGroup]="formularioRegistroPaciente" (ngSubmit)="registrarPaciente()" enctype="multipart/form-data">
+            <div class="d-flex justify-content-around mb-4">
                 <div class="form-group col-md-5">
                     <label class="labelPacientes" class="labelPacientes" for="nombrePaciente">Nombre del
                         paciente</label>
@@ -34,7 +34,7 @@
                 </div>
             </div>
 
-            <div class="form-row d-flex justify-content-around mb-4">
+            <div class="d-flex justify-content-around mb-4">
                 <div class="form-group col-md-4">
                     <label class="labelPacientes" for="edadPaciente">Edad</label>
                     <input type="number" class="form-control" id="edadPaciente" placeholder="Edad"
@@ -71,7 +71,7 @@
                 </div>
             </div>
 
-            <div class="form-row d-flex justify-content-around mb-4">
+            <div class="d-flex justify-content-around mb-4">
                 <div class="form-group col-md-4">
                     <label class="labelPacientes" for="obraSocial">Obra social</label>
                     <input type="text" class="form-control" id="obraSocial" placeholder="Obra social"
@@ -93,7 +93,7 @@
                 </div>
             </div>
 
-            <div class="form-row d-flex justify-content-around mb-4 px-2">
+            <div class="d-flex justify-content-around mb-4 px-2">
                 <div class="form-group col-md-12">
                     <label class="labelPacientes" for="emailPaciente">Correo electronico</label>
                     <input type="email" class="form-control" id="emailPaciente" placeholder="Correo electronico"
@@ -113,7 +113,7 @@
                 </div>
             </div>
 
-            <div class="form-row d-flex justify-content-around mb-4 px-2">
+            <div class="d-flex justify-content-around mb-4 px-2">
                 <div class="form-group col-md-6 pe-2">
                     <label class="labelPacientes" for="passwordPaciente">Contraseña</label>
                     <input type="password" class="form-control" id="passwordPaciente" placeholder="Contraseña"
@@ -141,21 +141,33 @@
                             El campo repetir contraseña debe tener al menos 6 digitos.
                         </div>
                     </div>
+                    <div class="alert alert-danger py-1 mt-1"
+                        *ngIf="formularioRegistroPaciente.errors?.['noCoinciden'] && (formularioRegistroPaciente.touched || formularioRegistroPaciente.dirty)">
+                        Los campos contraseña y repetir contraseña deben coincidir.
+                    </div>
                 </div>
             </div>
 
             <div class="d-flex flex-column justify-content-around mb-4 px-2">
                 <div class="form-group col-md-12 pe-2">
                     <label class="labelPacientes" for="imagenPerfilPac">Imagen de Perfil</label>
-                    <input type="file" (change)="subioImagenPerfil($event)" formControlName="imagenPerfil"
-                        class="form-control" id="imagenPerfilPac">
+                    <input type="file" (cambioArchivo)="subioImagenPerfil($event, 'paciente')"
+                        formControlName="imagenPerfil" class="form-control" id="imagenPerfilPac">
                 </div>
 
                 <div *ngIf="formularioRegistroPaciente.get('imagenPerfil')?.invalid && (formularioRegistroPaciente.get('imagenPerfil')?.dirty || formularioRegistroPaciente.get('imagenPerfil')?.touched)"
                     class="alert alert-danger py-1 mt-1">
                     <div *ngIf="formularioRegistroPaciente.get('imagenPerfil')?.errors?.['required']">
-                        La imagen del perfil es bligatoria.
+                        La imagen del perfil es obligatoria.
                     </div>
+                </div>
+                <div class="alert alert-danger py-1 mt-1 mt-2"
+                    *ngIf="formularioRegistroPaciente.errors?.['formatoIncorrecto']">
+                    La campo imagen perfil debe tener una extension de imagen (PNG, JPG,JPEG).
+                </div>
+                <div class="alert alert-danger py-1 mt-1 mt-1"
+                    *ngIf="formularioRegistroPaciente.errors?.['excedioTamaño']">
+                    La campo imagen de perfil no debe exceder los 10MB.
                 </div>
             </div>
 
@@ -169,7 +181,7 @@
     <div *ngSwitchCase="'especialistas'">
         <h2 id="tituloEspecialista" class="text-center p-3">Ingreso de Especialistas</h2>
         <form [formGroup]="formularioRegistroEspecialista" (ngSubmit)="registrarEspecialista()">
-            <div class="form-row d-flex justify-content-around mb-4">
+            <div class="d-flex justify-content-around mb-4">
                 <div class="form-group col-md-5">
                     <label class="labelEspecialista" for="nombreEspecialista">Nombre del
                         especialista</label>
@@ -183,7 +195,7 @@
                 </div>
             </div>
 
-            <div class="form-row d-flex justify-content-around mb-4">
+            <div class="d-flex justify-content-around mb-4">
                 <div class="form-group col-md-4">
                     <label class="labelEspecialista" for="edadPaciente">Edad</label>
                     <input type="number" class="form-control" id="edadPaciente" placeholder="Edad"
@@ -208,7 +220,7 @@
                     <div *ngIf="formularioRegistroEspecialista.get('documento')?.invalid && (formularioRegistroEspecialista.get('documento')?.dirty || formularioRegistroEspecialista.get('documento')?.touched)"
                         class="alert alert-danger py-1 mt-1">
                         <div *ngIf="formularioRegistroEspecialista.get('documento')?.errors?.['required']">
-                            El dni es requerido.
+                            El DNI es requerido.
                         </div>
                         <div *ngIf="formularioRegistroEspecialista.get('documento')?.errors?.['min']">
                             El DNI debe ser al menos 4.000.000
@@ -220,31 +232,31 @@
                 </div>
             </div>
 
-            <div class="form-row d-flex justify-content-around mb-4 px-2">
-                <div class="form-group col-md-6 pe-2">
-                    <label class="labelEspecialista" for="especialidadEspecialista">Especialidad</label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="basic-addon1" (click)="mostrarNuevaEsp = !mostrarNuevaEsp">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-bookmark-plus" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd"
-                                    d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zm6.5-11a.5.5 0 0 0-1 0V6H6a.5.5 0 0 0 0 1h1.5v1.5a.5.5 0 0 0 1 0V7H10a.5.5 0 0 0 0-1H8.5V4.5z">
-                                </path>
-                            </svg>
-                        </span>
-                        <ng-container *ngIf="!mostrarNuevaEsp; else nuevaEspecialidad">
-                            <select class="form-select" id="especialidadEspecialista" aria-describedby="basic-addon1"
-                                placeholder="Especialidad">
-                                <option>ssd</option>
-                                <option>ssd</option>
-                            </select>
-                        </ng-container>
-                        <ng-template #nuevaEspecialidad>
-                            <input type="text" class="form-control" id="especialidadEspecialista"
-                                aria-describedby="basic-addon1" placeholder="Nueva especialidad">
-                        </ng-template>
+            <div class="d-flex justify-content-around mb-4 px-2">
+                <div class="form-group col-md-6 ps-3">
+                    <label for="especialidad" class="labelEspecialista">Especialidad</label>
+                    <input id="especialidad" placeholder="Especialidad" type="text" class="form-control"
+                        formControlName="especialidad" [ngbTypeahead]="buscarEspecialidad"
+                        (focus)="focus$.next($any($event).target.value)" [editable]="true"
+                        (click)="click$.next($any($event).target.value)" #selectEsp="ngbTypeahead" />
+                    <div *ngIf="formularioRegistroEspecialista.get('especialidad')?.invalid && (formularioRegistroEspecialista.get('especialidad')?.dirty || formularioRegistroEspecialista.get('especialidad')?.touched)"
+                        class="alert alert-danger mt-3">
+                        <div *ngIf="formularioRegistroEspecialista.get('especialidad')?.errors?.['required']">
+                            El campo especialidad es requerido.
+                        </div>
+                        <div *ngIf="formularioRegistroEspecialista.get('especialidad')?.errors?.['minlength']">
+                            El campo especialidad debe contener como minimo 6 caracteres.
+                        </div>
+                        <div *ngIf="formularioRegistroEspecialista.get('especialidad')?.errors?.['maxlength']">
+                            El campo especialidad debe contener como maximo 255 caracteres.
+                        </div>
                     </div>
+
+                    <ng-template #rt let-r="result" let-t="term">
+                        <ngb-highlight [result]="r.nombre" [term]="t"></ngb-highlight>
+                    </ng-template>
                 </div>
+
                 <div class="form-group col-md-6 ps-3">
                     <label class="labelEspecialista" for="nroMatriculaEspecialista">Numero de Matricula</label>
                     <input type="number" class="form-control" id="nroMatriculaEspecialista"
@@ -252,7 +264,7 @@
                 </div>
             </div>
 
-            <div class="form-row d-flex justify-content-around mb-4 px-2">
+            <div class="d-flex justify-content-around mb-4 px-2">
                 <div class="form-group col-md-12">
                     <label class="labelEspecialista" for="emailEspecialista">Correo electronico</label>
                     <input type="email" class="form-control" id="emailEspecialista" placeholder="Correo electronico"
@@ -272,7 +284,7 @@
                 </div>
             </div>
 
-            <div class="form-row d-flex justify-content-around mb-4 px-2">
+            <div class="d-flex justify-content-around mb-4 px-2">
                 <div class="form-group col-md-6 pe-2">
                     <label class="labelEspecialista" for="passwordEspecialista">Contraseña</label>
                     <input type="password" class="form-control" id="passwordEspecialista" placeholder="Contraseña"
@@ -300,13 +312,33 @@
                             El campo repetir contraseña debe tener al menos 6 digitos.
                         </div>
                     </div>
+                    <div class="alert alert-danger py-1 mt-1"
+                        *ngIf="formularioRegistroEspecialista.errors?.['noCoinciden'] && (formularioRegistroEspecialista.touched || formularioRegistroEspecialista.dirty)">
+                        Los campos contraseña y repetir contraseña deben coincidir.
+                    </div>
                 </div>
             </div>
 
-            <div class="form-row d-flex justify-content-around mb-4 px-2">
+            <div class="d-flex flex-column justify-content-around mb-4 px-2">
                 <div class="form-group col-md-12 pe-2">
                     <label class="labelEspecialista" for="imagenPerfilEsp">Imagen de Perfil</label>
-                    <input type="file" class="form-control" id="imagenPerfilEsp">
+                    <input type="file" (cambioArchivo)="subioImagenPerfil($event, 'especialista')"
+                        formControlName="imagenPerfil" class="form-control" id="imagenPerfilEsp">
+                </div>
+
+                <div *ngIf="formularioRegistroEspecialista.get('imagenPerfil')?.invalid && (formularioRegistroEspecialista.get('imagenPerfil')?.dirty || formularioRegistroEspecialista.get('imagenPerfil')?.touched)"
+                    class="alert alert-danger py-1 mt-1">
+                    <div *ngIf="formularioRegistroEspecialista.get('imagenPerfil')?.errors?.['required']">
+                        La imagen del perfil es obligatoria.
+                    </div>
+                </div>
+                <div class="alert alert-danger py-1 mt-1 mt-2"
+                    *ngIf="formularioRegistroEspecialista.errors?.['formatoIncorrecto']">
+                    La campo imagen perfil debe tener una extension de imagen (PNG, JPG,JPEG).
+                </div>
+                <div class="alert alert-danger py-1 mt-1 mt-1"
+                    *ngIf="formularioRegistroEspecialista.errors?.['excedioTamaño']">
+                    La campo imagen de perfil no debe exceder los 10MB.
                 </div>
             </div>
 
@@ -320,7 +352,7 @@
     <div *ngSwitchCase="'administradores'">
         <h2 id="tituloAdministrador" class="text-center p-3">Ingreso de Administradores</h2>
         <form [formGroup]="formularioRegistroAdministrador" (ngSubmit)="registrarAdministrador()">
-            <div class="form-row d-flex justify-content-around mb-4">
+            <div class="d-flex justify-content-around mb-4">
                 <div class="form-group col-md-5">
                     <label class="labelAdministrador" for="nombreAdministrador">Nombre del
                         administrador</label>
@@ -334,7 +366,7 @@
                 </div>
             </div>
 
-            <div class="form-row d-flex justify-content-around mb-4">
+            <div class="d-flex justify-content-around mb-4">
                 <div class="form-group col-md-4">
                     <label class="labelAdministrador" for="edadPaciente">Edad</label>
                     <input type="number" class="form-control" id="edadPaciente" placeholder="Edad"
@@ -371,7 +403,7 @@
                 </div>
             </div>
 
-            <div class="form-row d-flex justify-content-around mb-4 px-2">
+            <div class="d-flex justify-content-around mb-4 px-2">
                 <div class="form-group col-md-12">
                     <label class="labelAdministrador" for="emailAdministrador">Correo electronico</label>
                     <input type="email" class="form-control" id="emailAdministrador" placeholder="Correo electronico"
@@ -391,7 +423,7 @@
                 </div>
             </div>
 
-            <div class="form-row d-flex justify-content-around mb-4 px-2">
+            <div class="d-flex justify-content-around mb-4 px-2">
                 <div class="form-group col-md-6 pe-2">
                     <label class="labelAdministrador" for="passwordAdministrador">Contraseña</label>
                     <input type="password" class="form-control" id="passwordAdministrador" placeholder="Contraseña"
@@ -419,13 +451,33 @@
                             El campo repetir contraseña debe tener al menos 6 digitos.
                         </div>
                     </div>
+                    <div class="alert alert-danger py-1 mt-1"
+                        *ngIf="formularioRegistroAdministrador.errors?.['noCoinciden'] && (formularioRegistroAdministrador.touched || formularioRegistroAdministrador.dirty)">
+                        Los campos contraseña y repetir contraseña deben coincidir.
+                    </div>
                 </div>
             </div>
 
-            <div class="form-row d-flex justify-content-around mb-4 px-2">
+            <div class="d-flex flex-column justify-content-around mb-4 px-2">
                 <div class="form-group col-md-12 pe-2">
                     <label class="labelAdministrador" for="imagenPerfilEsp">Imagen de Perfil</label>
-                    <input type="file" class="form-control" id="imagenPerfilEsp">
+                    <input type="file" (cambioArchivo)="subioImagenPerfil($event, 'administrador')"
+                        formControlName="imagenPerfil" class="form-control" id="imagenPerfilPac">
+                </div>
+
+                <div *ngIf="formularioRegistroAdministrador.get('imagenPerfil')?.invalid && (formularioRegistroAdministrador.get('imagenPerfil')?.dirty || formularioRegistroAdministrador.get('imagenPerfil')?.touched)"
+                    class="alert alert-danger py-1 mt-1">
+                    <div *ngIf="formularioRegistroAdministrador.get('imagenPerfil')?.errors?.['required']">
+                        La imagen del perfil es obligatoria.
+                    </div>
+                </div>
+                <div class="alert alert-danger py-1 mt-1 mt-2"
+                    *ngIf="formularioRegistroAdministrador.errors?.['formatoIncorrecto']">
+                    La campo imagen perfil debe tener una extension de imagen (PNG, JPG,JPEG).
+                </div>
+                <div class="alert alert-danger py-1 mt-1 mt-1"
+                    *ngIf="formularioRegistroAdministrador.errors?.['excedioTamaño']">
+                    La campo imagen de perfil no debe exceder los 10MB.
                 </div>
             </div>
 

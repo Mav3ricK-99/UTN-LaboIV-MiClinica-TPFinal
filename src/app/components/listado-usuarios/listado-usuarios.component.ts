@@ -25,8 +25,6 @@ export class ListadoUsuariosComponent {
 
   constructor(private usuariosService: UsuarioService) {
     this.usuarios$ = this.usuariosService.traerTodos();
-
-    this.mostrarFormulario = 'pacientes';
   }
 
   cambiarFormulario(formulario: string) {

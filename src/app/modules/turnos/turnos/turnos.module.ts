@@ -9,7 +9,7 @@ import { TablaTurnosPacienteComponent } from 'src/app/components/turnos/tabla-tu
 import { FormSharedModule } from '../../shared/form-shared/form-shared.module';
 import { ModalCancelarTurnoComponent } from 'src/app/components/turnos/modal-cancelar-turno/modal-cancelar-turno.component';
 import { ModalCalificarAtencionComponent } from 'src/app/components/turnos/modal-calificar-atencion/modal-calificar-atencion.component';
-import { NgbDatepickerModule, NgbRatingModule, NgbTimepickerModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbRatingModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModalEncuestaTurnoComponent } from 'src/app/components/turnos/modal-encuesta-turno/modal-encuesta-turno.component';
 import { ModalRechazarTurnoComponent } from 'src/app/components/turnos/modal-rechazar-turno/modal-rechazar-turno.component';
 import { ModalFinalizarTurnoComponent } from 'src/app/components/turnos/modal-finalizar-turno/modal-finalizar-turno.component';
@@ -37,8 +37,6 @@ import { FiltrosTurnosComponent } from 'src/app/components/turnos/filtros-turnos
     FormSharedModule,
     NgbRatingModule,
     NgbTypeaheadModule,
-    NgbTimepickerModule,
-    NgbDatepickerModule 
   ]
 })
 export class TurnosModule { }

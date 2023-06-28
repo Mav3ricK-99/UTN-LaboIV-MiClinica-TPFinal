@@ -1,8 +1,10 @@
-<section class="container-fluid">
+<section class="container-fluid py-5" [@listadoOcultot]="listadoOculto ? 'oculta' : 'mostrar'">
     <article>
         <div class="p-2 mb-1 bg-light-dark rounded-3">
-            <div class="container-fluid py-2">
-                <app-tabla-usuarios [soloTipoUsuario]="'paciente'" [usuarios$]="usuarios$" (eligioUsuario)="mostrarHistorialUsuario($event)" />
+            <div class="container-fluid">
+                <app-tabla-usuarios [soloTipoUsuario]="'paciente'" [usuarios$]="usuarios$"
+                    (eligioUsuario)="mostrarHistorialUsuario($event)" />
+                <small class="text-muted">*Hace doble click sobre un paciente para ver su historial</small>
             </div>
         </div>
     </article>

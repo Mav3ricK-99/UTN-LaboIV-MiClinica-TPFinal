@@ -32,7 +32,7 @@
                             <li><a class="dropdown-item" (click)="aceptarTurno(turno)"
                                     *ngIf="turno.pendiente()">Aceptar</a>
                             </li>
-                            <li><a class="dropdown-item" data-bs-toggle="modal" *ngIf="turno.activo()"
+                            <li><a class="dropdown-item" data-bs-toggle="modal" *ngIf="turno.aprobado()"
                                     (click)="seleccionarTurno(turno)" data-bs-toggle="modal"
                                     data-bs-target="#modalFinalizarTurno">Finalizar</a>
                             </li>
