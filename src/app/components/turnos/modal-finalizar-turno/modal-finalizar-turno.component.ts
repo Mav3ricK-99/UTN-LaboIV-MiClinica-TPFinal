@@ -39,7 +39,7 @@ export class ModalFinalizarTurnoComponent {
   verificarDatosExtra: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     let datosExtraArray = control.get('datosExtra')?.value;
 
-    if (datosExtraArray.length > 5) {
+    if (datosExtraArray.length > 2) {
       return { excedido: true };
     }
 

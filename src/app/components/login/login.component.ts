@@ -47,6 +47,11 @@ export class LoginComponent {
             'unverified': true
           })
         }; break;
+        case "auth/blocked-user": {
+          this.formularioIngreso.controls['contraseña'].setErrors({
+            'blocked-user': true
+          })
+        }; break;
       }
     });
   }

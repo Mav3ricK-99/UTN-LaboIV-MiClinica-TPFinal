@@ -52,7 +52,12 @@
         <ng-template #loader>
             <tbody>
                 <tr>
-                    <td colspan="6" align="center">Cargando...</td>
+                    <td colspan="6" align="center">
+                        <div class="d-flex justify-content-center">
+                            <strong class="me-3">Cargando</strong>
+                            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </ng-template>

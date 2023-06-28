@@ -10,7 +10,6 @@ export class RegisterComponent {
   mostrarFormulario: string;
 
   constructor() {
-    this.mostrarFormulario = 'pacientes';
   }
 
   cambiarFormulario(formulario: string) {

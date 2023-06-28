@@ -1,10 +1,18 @@
 <section class="d-flex justify-content-around p-4 px-5">
     <article class="bg-light">
-        <img class="rounded-left img-form"
-            src="./assets/formulario.avif"
-            alt="MiClinica">
+        <img class="rounded-left img-form" src="./assets/formulario.avif" alt="MiClinica">
     </article>
     <article class="flex-fill p-2 bg-light rounded-right">
-        <app-formulario-alta [mostrarFormulario]="mostrarFormulario"/>
+        <div *ngIf="!mostrarFormulario" class="d-flex flex-column align-items-center h-100 justify-content-around">
+            <div (click)="cambiarFormulario('especialistas')" class="d-flex flex-column align-content-around justify-content-around align-items-center">
+                <h4>Especialistas</h4>
+                <img class="img-button" src="./assets/especialistas.avif" />
+            </div>
+            <div (click)="cambiarFormulario('pacientes')" class="d-flex flex-column align-items-center">
+                <h4>Pacientes</h4>
+                <img class="img-button" src="./assets/pacientes.avif" />
+            </div>
+        </div>
+        <app-formulario-alta *ngIf="mostrarFormulario" [mostrarFormulario]="mostrarFormulario" />
     </article>
 </section>

@@ -9,7 +9,7 @@
                         <p class="text-muted mb-1">DNI {{usuario.dni}}</p>
                         <p class="text-muted mb-4">{{usuario.edad}} años</p>
                         <div class="d-flex justify-content-center mb-2">
-                            <button type="button" class="btn btn-danger">Deshabilitar cuenta</button>
+                            <button type="button" (click)="deshabilitarCuenta()" class="btn btn-danger">Deshabilitar cuenta</button>
                         </div>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
                                         class="col-xs-3 col-sm-auto col-col-xs-3 col-sm-auto col-form-label">Buscar por
                                         especialidad:</label>
                                     <input id="especialidad" type="text" class="form-control"
-                                        formControlName="especialidad" [ngbTypeahead]="buscarEspecialidad"
+                                        formControlName="especialidad" [ngbTypeahead]="buscarEspecialidad" [editable]="true"
                                         (focus)="focus$.next($any($event).target.value)"
                                         (click)="click$.next($any($event).target.value)" #selectEsp="ngbTypeahead" />
                                     <div *ngIf="formularioFiltros.get('especialidad')?.invalid && (formularioFiltros.get('especialidad')?.dirty || formularioFiltros.get('especialidad')?.touched)"

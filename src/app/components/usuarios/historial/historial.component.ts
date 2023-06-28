@@ -27,11 +27,11 @@ export class HistorialComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    /* if (changes['especialidad']) {
+    if (changes['especialidad']) {
       let especialidad = changes['especialidad'].currentValue;
       this.turnos$ = this.turnosService.traerTurnosUsuario(this.usuario, EstadosTurnos.finalizado, especialidad);
     } else {
-    } */
-    this.turnos$ = this.turnosService.traerTurnosUsuario(this.usuario, EstadosTurnos.finalizado);
+      this.turnos$ = this.turnosService.traerTurnosUsuario(this.usuario, EstadosTurnos.finalizado);
+    }
   }
 }

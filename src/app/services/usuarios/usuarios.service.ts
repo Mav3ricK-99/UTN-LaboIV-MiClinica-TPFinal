@@ -47,8 +47,6 @@ export class UsuarioService {
         this.traerUsuario(user.uid).then(doc => {
           if (doc.exists()) {
             let data = doc.data();
-            data['email'] = user?.email;
-            data['uid'] = user?.uid;
             if (data['tipoUsuario'] == 'especialista') {
               this.usuarioIngresado = this.armarEspecialista(data);
             } else if (data['tipoUsuario'] == 'paciente') {
@@ -178,7 +176,24 @@ export class UsuarioService {
   async ingresarUsuario(email: string, password: string) {
     const auth = getAuth();
 
-    await signInWithEmailAndPassword(auth, email, password);
+    var blockedUser = false;
+    await signInWithEmailAndPassword(auth, email, password).then((userCred) => {
+      if (userCred.user) {
+        this.traerUsuario(userCred.user.uid).then(doc => {
+          if (doc.exists() && doc.data()['cuentaHabilitada'] == false) {
+            this.cerrarSesionUsuario();
+            blockedUser = true;
+          }
+        });
+      }
+    });
+
+    if(blockedUser) {
+      throw {
+        code: "auth/blocked-user",
+        error: new Error("auth/blocked-user")
+      };
+    }
   }
 
   async cerrarSesionUsuario() {
@@ -228,15 +243,19 @@ export class UsuarioService {
 
   getUsuarioDeLocalStorage() {
     let usuarioIngresadoLocalStrg = localStorage.getItem('currentUser');
-    if (usuarioIngresadoLocalStrg != undefined) {
-      let usuario = JSON.parse(usuarioIngresadoLocalStrg);
-      if (usuario.tipoUsuario == 'especialista') {
-        this.usuarioIngresado = this.armarEspecialista(usuario);
-      } else if (usuario.tipoUsuario == 'paciente') {
-        this.usuarioIngresado = this.armarPaciente(usuario);
-      } else {
-        this.usuarioIngresado = this.armarUsuario(usuario);
+    try {
+      if (usuarioIngresadoLocalStrg != undefined) {
+        let usuario = JSON.parse(usuarioIngresadoLocalStrg);
+        if (usuario.tipoUsuario == 'especialista') {
+          this.usuarioIngresado = this.armarEspecialista(usuario);
+        } else if (usuario.tipoUsuario == 'paciente') {
+          this.usuarioIngresado = this.armarPaciente(usuario);
+        } else {
+          this.usuarioIngresado = this.armarUsuario(usuario);
+        }
       }
+    } catch (e: any) {
+      localStorage.removeItem('currentUser');
     }
   }
 

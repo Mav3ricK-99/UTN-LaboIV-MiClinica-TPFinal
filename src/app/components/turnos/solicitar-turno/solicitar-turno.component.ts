@@ -122,7 +122,6 @@ export class SolicitarTurnoComponent {
   seleccionarEspecialista(especialista: Especialista) {
     this.especialistaSeleccionado = especialista;
     this.dates = this.especialistaSeleccionado.disponibilidadesProximas();
-    console.log(especialista);
     this.formularioSolicitarTurno.patchValue({
       especialista: especialista,
     });

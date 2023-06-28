@@ -10,6 +10,7 @@ import { Especialidades } from 'src/app/classes/usuarios/especialista/especialis
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-perfil',
   templateUrl: './perfil.component.html',
@@ -85,21 +86,41 @@ export class PerfilComponent implements OnInit {
     });
   }
 
-  buscarEspecialidad: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
-    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.selectEsp.isPopupOpen()));
-    const inputFocus$ = this.focus$;
-
-    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+  buscarEspecialidad: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
       map((term) =>
-        (term === '' ? Object.values(Especialidades) : Object.values(Especialidades).filter((v: string) => v.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10),
+        term === ''
+          ? []
+          : Object.values(Especialidades).filter((v: string) => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10),
       ),
     );
-  };
 
   actualizarFiltros(data: any) {
     if (data['especialidad']) {
       this.especialidadTurno = data['especialidad'];
     }
+  }
+
+  deshabilitarCuenta() {
+    this.mostrarModal("Esta seguro de deshabilitar su cuenta?", 'info', "Para deshacer esta operacion tendra que contactarse con nuestros operadores.")
+  }
+
+  mostrarModal(titulo: string, icon: string, textoCuerpo: string) {
+    if (icon != 'success' && icon != 'error' && icon != 'info') return;
+    Swal.fire({
+      title: titulo,
+      icon: icon,
+      text: textoCuerpo,
+      showCancelButton: true,
+      confirmButtonText: 'Deshabilitar',
+      cancelButtonText: 'Cancelar'
+    }).then((res) => {
+      if (res.isConfirmed && this.usuariosService.usuarioIngresado) {
+        this.usuariosService.habilitarCuenta(this.usuariosService.usuarioIngresado.uid, false);
+        this.usuariosService.cerrarSesionUsuario();
+
+      }
+    })
   }
 }
