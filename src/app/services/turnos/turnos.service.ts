@@ -45,7 +45,9 @@ export class TurnosService {
 
     return collectionData(q, { idField: 'uid' }).pipe(map(collection => {
       return collection.map(b => this.armarTurno(b, true));
-    }));;
+    }), map((turnos: Turno[]) => {
+      return turnos.filter((turno: Turno) => this.otrosFiltros(filtros, turno))
+    }));
   }
 
   traerMisTurnos(filtros?: FiltroTurnos) {
@@ -73,29 +75,7 @@ export class TurnosService {
         return turno;
       });
     }), map((turnos: Turno[]) => {
-      return turnos.filter((turno: Turno, i: number) => {
-        let pasoElFiltro = true;
-        if (filtros) {
-
-          if (filtros.altura && filtros.altura != turno.historial.altura) {
-            pasoElFiltro = false;
-          }
-
-          if (filtros.peso && filtros.peso != turno.historial.peso) {
-            pasoElFiltro = false;
-          }
-
-          if (filtros.temperatura && filtros.temperatura != turno.historial.temperatura) {
-            pasoElFiltro = false;
-          }
-
-          if (filtros.presion && filtros.presion != turno.historial.presion) {
-            pasoElFiltro = false;
-          }
-        }
-
-        return pasoElFiltro ? turno : undefined;
-      })
+      return turnos.filter((turno: Turno) => this.otrosFiltros(filtros, turno))
     }));
   }
 
@@ -252,5 +232,31 @@ export class TurnosService {
     }
 
     return qAnd;
+  }
+
+  otrosFiltros(filtros: FiltroTurnos | undefined, turno: Turno) {
+    {
+      let pasoElFiltro = true;
+      if (filtros) {
+
+        if (filtros.altura && filtros.altura != turno.historial.altura) {
+          pasoElFiltro = false;
+        }
+
+        if (filtros.peso && filtros.peso != turno.historial.peso) {
+          pasoElFiltro = false;
+        }
+
+        if (filtros.temperatura && filtros.temperatura != turno.historial.temperatura) {
+          pasoElFiltro = false;
+        }
+
+        if (filtros.presion && filtros.presion != turno.historial.presion) {
+          pasoElFiltro = false;
+        }
+      }
+
+      return pasoElFiltro ? turno : undefined;
+    }
   }
 }
