@@ -22,14 +22,14 @@ import Swal from 'sweetalert2';
         transform: 'translateY(0)'
       })),
       state('closed', style({
-        opacity: 0.2,
-        transform: 'translateY(+400px)'
+        opacity: 0.03,
+        transform: 'translateY(+300px)'
       })),
       transition('open => closed', [
-        animate('.6s ease-out')
+        animate('.55s ease-out')
       ]),
       transition('closed => open', [
-        animate('.6s ease-out')
+        animate('.55s ease-out')
       ]),
     ])],
 })
@@ -66,7 +66,7 @@ export class PerfilComponent implements OnInit {
   ngOnInit(): void {
     setTimeout(() => {
       this.isOpen = !this.isOpen;
-    }, 1000);
+    }, 200);
   }
 
   public descargarPDF(): void {

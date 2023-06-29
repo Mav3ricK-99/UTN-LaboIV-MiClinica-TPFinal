@@ -15,10 +15,10 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
         style({ opacity: 1, transform: 'translateY(0px)' })
       ),
       state('oculta',
-        style({ opacity: 0.2, transform: 'translateY(+400px)' })
+        style({ opacity: 0, transform: 'translateY(+300px)' })
       ),
       transition('oculta => mostrar', [
-        animate('0.75s 0s ease')
+        animate('0.55s 0s ease-out')
       ]),
     ])
   ]
@@ -46,7 +46,7 @@ export class ListadoPacientesComponent implements OnInit {
   ngOnInit(): void {
     setTimeout(() => {
       this.listadoOculto = false;
-    }, 1000);
+    }, 200);
   }
 
   mostrarHistorialUsuario($event: any) {
