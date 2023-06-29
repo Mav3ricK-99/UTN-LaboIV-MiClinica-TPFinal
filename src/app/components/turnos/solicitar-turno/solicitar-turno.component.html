@@ -9,20 +9,20 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="modalSolicitarTurnoLabel">Selecciona un especialista</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body col-md-12 d-flex flex-wrap">
-                <div class="col" *ngIf="(especialistas$ | async) as especialistas;">
-                    <ng-container *ngIf="especialistas.length > 0">
-                        <ng-container *ngFor="let especialista of especialistas">
+            <div class="modal-body col-md-12 d-flex flex-wrap justify-content-around" *ngIf="(especialistas$ | async) as especialistas;">
+                <ng-container *ngIf="especialistas.length > 0">
+                    <ng-container *ngFor="let especialista of especialistas">
+                        <div class="m-1">
                             <button class="btn btn-success d-flex flex-column align-items-center"
-                                (click)="seleccionarEspecialista(especialista)" data-bs-toggle="modal" data-bs-target="#modalElegirEspecialidad">
+                                (click)="seleccionarEspecialista(especialista)" data-bs-toggle="modal"
+                                data-bs-target="#modalElegirEspecialidad">
                                 <img width="56" [src]="especialista.pathImagen" />
                                 {{especialista.nombre}}</button>
-                        </ng-container>
+                        </div>
                     </ng-container>
-                </div>
+                </ng-container>
             </div>
         </div>
     </div>
@@ -33,14 +33,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalSolicitarTurnoLabel" *ngIf="especialistaSeleccionado">Selecciona una especialidad de
+                <h1 class="modal-title fs-5" id="modalSolicitarTurnoLabel" *ngIf="especialistaSeleccionado">Selecciona
+                    una especialidad de
                     {{especialistaSeleccionado.nombre}}</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body col-md-12 d-flex flex-wrap" *ngIf="especialistaSeleccionado">
                 <div class="col text-center" *ngFor="let especialidad of especialistaSeleccionado.especialidad">
-                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" (click)="seleccionarEspecialidad(especialidad)"
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                        (click)="seleccionarEspecialidad(especialidad)"
                         data-bs-target="#modalSolicitarTurno">{{especialidad}}</button>
                 </div>
             </div>
@@ -77,8 +78,8 @@
 
                         <div class="form-group col-md-12 mb-2 d-flex flex-wrap">
                             <div class="col" *ngFor="let fecha of dates">
-                                <button type="button" [class.btn-selected]="fecha == dateSeleccionada" class="m-1 btn btn-primary"
-                                    (click)="seleccionarFecha(fecha)">{{fecha | date:
+                                <button type="button" [class.btn-selected]="fecha == dateSeleccionada"
+                                    class="m-1 btn btn-primary" (click)="seleccionarFecha(fecha)">{{fecha | date:
                                     'short'}}</button>
                             </div>
                             <div *ngIf="formularioSolicitarTurno.errors?.['noDisponible'] && (formularioSolicitarTurno.touched || formularioSolicitarTurno.dirty)"
@@ -106,7 +107,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary"
-                            [disabled]="!formularioSolicitarTurno.valid || botonDeshabilitado">Confirmar nuevo Turno</button>
+                            [disabled]="!formularioSolicitarTurno.valid || botonDeshabilitado">Confirmar nuevo
+                            Turno</button>
                     </div>
                 </form>
             </div>
