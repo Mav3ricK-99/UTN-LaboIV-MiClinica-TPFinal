@@ -121,10 +121,15 @@ export class SolicitarTurnoComponent {
 
   seleccionarEspecialista(especialista: Especialista) {
     this.especialistaSeleccionado = especialista;
-    this.dates = this.especialistaSeleccionado.disponibilidadesProximas();
-    this.formularioSolicitarTurno.patchValue({
-      especialista: especialista,
-    });
+    this.turnosService.traerMisTurnos().subscribe((turnos: Turno[]) => {
+      if(turnos) {
+        this.especialistaSeleccionado.turnos = turnos;
+      }
+      this.dates = this.especialistaSeleccionado.disponibilidadesProximas();
+      this.formularioSolicitarTurno.patchValue({
+        especialista: especialista,
+      });
+    })
   }
 
   seleccionarFecha(date: Date) {
