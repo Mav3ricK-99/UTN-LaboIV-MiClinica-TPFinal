@@ -62,10 +62,11 @@ export class Especialista extends Usuario {
     }
 
     disponibleEnFecha(fecha: Date): boolean {
+        console.log(this.turnos.length);
         if (!this.turnos.length) return true;
         var disponibleEnFecha = true;
         this.turnos.forEach((turno) => {
-            if (turno.estado == EstadosTurnos.aprobado) {
+            if (turno.estado == EstadosTurnos.aprobado || turno.estado == EstadosTurnos.pendiente) {
                 let fechaTurno = turno.fecha_turno;
                 fechaTurno.setSeconds(0);
                 let fechaTurnoEn30Minutos = new Date(turno.fecha_turno.getTime() + 30 * 60000); //30 minutos despues
