@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CollectionReference, DocumentData, Firestore, QueryFilterConstraint, addDoc, and, collection, collectionData, doc, getDoc, query, updateDoc, where } from '@angular/fire/firestore';
 import { Paciente } from 'src/app/classes/usuarios/paciente/paciente';
 import { UsuarioService } from '../usuarios/usuarios.service';
-import { map } from 'rxjs';
+import { filter, map } from 'rxjs';
 import { CalificacionTurno, EncuestaTurno, EstadosTurnos, Turno } from 'src/app/classes/turno/turno';
 import { Usuario } from 'src/app/classes/usuarios/usuario';
 import { Especialista } from 'src/app/classes/usuarios/especialista/especialista';
@@ -39,7 +39,7 @@ export class TurnosService {
 
   traerTodos(filtros?: FiltroTurnos) {
     let q = query(this.turnosCollection);
-    if (filtros) {
+    if (filtros?.especialidad || filtros?.paciente || filtros?.especialista) {
       q = query(this.turnosCollection, this.filtrar(filtros));
     }
 
@@ -53,7 +53,7 @@ export class TurnosService {
     let campo = usuarioIngresado instanceof Paciente ? 'paciente_uid' : 'especialista_uid';
 
     let q = query(this.turnosCollection, where(campo, "==", usuarioIngresado?.uid));
-    if (filtros) {
+    if (filtros?.especialidad || filtros?.paciente || filtros?.especialista) {
       q = query(this.turnosCollection, and(where(campo, "==", usuarioIngresado?.uid), this.filtrar(filtros)));
     }
 
@@ -72,6 +72,30 @@ export class TurnosService {
 
         return turno;
       });
+    }), map((turnos: Turno[]) => {
+      return turnos.filter((turno: Turno, i: number) => {
+        let pasoElFiltro = true;
+        if (filtros) {
+
+          if (filtros.altura && filtros.altura != turno.historial.altura) {
+            pasoElFiltro = false;
+          }
+
+          if (filtros.peso && filtros.peso != turno.historial.peso) {
+            pasoElFiltro = false;
+          }
+
+          if (filtros.temperatura && filtros.temperatura != turno.historial.temperatura) {
+            pasoElFiltro = false;
+          }
+
+          if (filtros.presion && filtros.presion != turno.historial.presion) {
+            pasoElFiltro = false;
+          }
+        }
+
+        return pasoElFiltro ? turno : undefined;
+      })
     }));
   }
 
@@ -220,9 +244,9 @@ export class TurnosService {
         qAnd = where('especialidad', '==', filtros.especialidad);
       }
     } else {
-      if (filtros.paciente) { //Filtro por paciente
+      if (filtros.paciente != undefined) { //Filtro por paciente
         qAnd = where('paciente_uid', '==', filtros.paciente.uid);
-      } else if (filtros.especialista) { //Filtro por especialista
+      } else if (filtros.especialista != undefined) { //Filtro por especialista
         qAnd = where('especialista_uid', '==', filtros.especialista.uid);
       }
     }

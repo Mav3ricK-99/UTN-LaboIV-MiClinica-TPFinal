@@ -2,7 +2,8 @@
     <h3>Filtros tabla</h3>
     <form class="d-flex mb-3" [formGroup]="formularioFiltros">
         <div class="form-group col-md-2 me-2">
-            <label for="especialidad" class="col-xs-3 col-sm-auto col-col-xs-3 col-sm-auto col-form-label">Buscar por especialidad:</label>
+            <label for="especialidad" class="col-xs-3 col-sm-auto col-col-xs-3 col-sm-auto col-form-label">Buscar por
+                especialidad:</label>
             <input id="especialidad" type="text" class="form-control" formControlName="especialidad"
                 [ngbTypeahead]="buscarEspecialidad" (focus)="focus$.next($any($event).target.value)"
                 (click)="click$.next($any($event).target.value)" #selectEsp="ngbTypeahead" />
@@ -22,7 +23,8 @@
         </ng-template>
 
         <div class="form-group col-md-2 me-2" *ngIf="filtrarPor == 'especialista';else filtroPaciente">
-            <label for="especialistas" class="col-xs-3 col-sm-auto col-col-xs-3 col-sm-auto col-form-label">Especialistas:</label>
+            <label for="especialistas"
+                class="col-xs-3 col-sm-auto col-col-xs-3 col-sm-auto col-form-label">Especialistas:</label>
             <input id="especialistas" type="text" class="form-control" [resultTemplate]="rt"
                 [inputFormatter]="formatter" formControlName="especialista" [ngbTypeahead]="buscarEspecialista"
                 [editable]="false" />
@@ -107,12 +109,17 @@
                         El campo presion maxima debe ser como minimo 11.
                     </div>
                 </div>
+                <div class="alert alert-danger py-1 mt-1"
+                    *ngIf="formularioFiltros.errors?.['losDosCamposSonRequeridos'] && (formularioFiltros.touched || formularioFiltros.dirty)">
+                    Los campos dos presion minima y presion maxima son requeridos cuando se completa el otro.
+                </div>
             </div>
         </div>
 
         <ng-template #filtroPaciente>
             <div class="form-group col-md-2 me-2">
-                <label for="pacientes" class="col-xs-3 col-sm-auto col-col-xs-3 col-sm-auto col-form-label">Pacientes:</label>
+                <label for="pacientes"
+                    class="col-xs-3 col-sm-auto col-col-xs-3 col-sm-auto col-form-label">Pacientes:</label>
                 <input id="pacientes" type="text" class="form-control" [resultTemplate]="rt"
                     [inputFormatter]="formatter" formControlName="paciente" [ngbTypeahead]="buscarPaciente"
                     [editable]="false" />

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { UsuarioService } from 'src/app/services/usuarios/usuarios.service';
 import { Observable, Subject, merge, of, OperatorFunction, ObservableInput } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, catchError, tap, switchMap } from 'rxjs/operators';
@@ -35,7 +35,7 @@ export class FiltrosTurnosComponent implements OnInit {
       temperatura: new FormControl(null, [Validators.max(50), Validators.min(30)]),
       presionMaxima: new FormControl(null, [Validators.max(25), Validators.min(11)]), //escrito como 120/80 mm Hg
       presionMinima: new FormControl(null, [Validators.max(10), Validators.min(6)]),
-    });
+    }, { validators: this.validarFiltroPresion() });
 
     this.formularioFiltros.valueChanges.pipe(
       debounceTime(200), distinctUntilChanged(),
@@ -48,6 +48,19 @@ export class FiltrosTurnosComponent implements OnInit {
     } else {
       this.formularioFiltros.addControl('especialista', new FormControl<Especialista | null>(null))
     }
+  }
+
+  validarFiltroPresion(): ValidatorFn {
+    return (formulario: AbstractControl): ValidationErrors | null => {
+      let ctrlPresionMaxima = formulario.get('presionMaxima');
+      let ctrlPresionMinima = formulario.get('presionMinima');
+      if ((ctrlPresionMaxima?.value && !ctrlPresionMinima?.value) || (!ctrlPresionMaxima?.value && ctrlPresionMinima?.value)) {
+        return {
+          losDosCamposSonRequeridos: true,
+        }
+      }
+      return null;
+    };
   }
 
   buscarEspecialista: OperatorFunction<string, readonly Usuario[]> = (text$: Observable<string>) =>
