@@ -42,7 +42,9 @@ import { AccesoRapidoComponent } from './components/acceso-rapido/acceso-rapido.
     FormSharedModule,
     NgbModule,
     NgbCollapseModule,
-    NoopAnimationsModule
+    NoopAnimationsModule,
+    BrowserModule,
+    BrowserAnimationsModule,
   ],
   providers: [UsuarioService, { provide: FIREBASE_OPTIONS, useValue: environment.firebase }],
   bootstrap: [AppComponent]

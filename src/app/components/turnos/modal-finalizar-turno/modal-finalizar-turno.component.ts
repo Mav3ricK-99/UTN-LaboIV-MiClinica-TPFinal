@@ -58,6 +58,11 @@ export class ModalFinalizarTurnoComponent {
     datosExtraFormArray.push(this.crearFormGroupClaveValor());
   }
 
+  eliminarDatosExtra() {
+    let datosExtraFormArray = this.formularioFinalizarTurno.get('datosExtra') as FormArray;
+    datosExtraFormArray.removeAt(datosExtraFormArray.length - 1);
+  }
+
   finalizarTurno() {
     if (!this.formularioFinalizarTurno.valid) return;
 

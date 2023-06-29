@@ -150,8 +150,11 @@
                             Uno de los datos opcionales esta faltando.
                         </div>
                         <button type="button" class="btn btn-success"
-                            [disabled]="formularioFinalizarTurno.get('datosExtra')?.value.length > 4"
+                            [disabled]="formularioFinalizarTurno.get('datosExtra')?.value.length > 2"
                             (click)="agregarDatosExtra()">+</button>
+                        <button type="button" class="btn btn-danger mt-2"
+                            [disabled]="formularioFinalizarTurno.get('datosExtra')?.value.length < 2"
+                            (click)="eliminarDatosExtra()">-</button>
                     </div>
                 </div>
                 <div class="modal-footer">

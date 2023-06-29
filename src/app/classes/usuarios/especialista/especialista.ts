@@ -62,7 +62,6 @@ export class Especialista extends Usuario {
     }
 
     disponibleEnFecha(fecha: Date): boolean {
-        console.log(this.turnos.length);
         if (!this.turnos.length) return true;
         var disponibleEnFecha = true;
         this.turnos.forEach((turno) => {
